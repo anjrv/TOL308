@@ -1,5 +1,7 @@
 "use strict";
 
+// jsfiddle: https://jsfiddle.net/o7cqxhks/
+
 // ABSOLUTE VALUE
 // --------------
 //
@@ -71,6 +73,19 @@ function medOfThree(a, b, c) {
 // EXTRA:   try for efficiency (hint: sqrt without sqrt)
 //
 function isPrime(integer) {
+    let sqrt = integer / 2;
+
+    // Do some iterations to get sqrt to be.. approximately an int
+    for (let i = 0; i < 5; i++) {
+        sqrt = (sqrt + integer / sqrt) / 2;
+    }
+
+    for (let i = 2; i <= sqrt; i++) {
+        if (integer % i === 0) return false;
+    }
+
+    // 1 is covered by falling through the loop entirely
+    return true;
 }
 
 
@@ -92,7 +107,7 @@ function reverseString(str) {
     let res = '';
 
     for (let i = str.length - 1; i >= 0; i--) {
-        console.log(str[i]);
+        res += str[i];
     }
 
     return res;
