@@ -36,9 +36,7 @@ function maxOfTwo(a, b) {
 // MARKING: 1 point
 //
 function maxOfThree(a, b, c) {
-    if(a >= b && a >= c) return a;
-    if(b >= a && b >= c) return b;
-    return c;
+    return maxOfTwo(maxOfTwo(a, b), c);
 }
 
 
