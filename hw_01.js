@@ -71,12 +71,18 @@ function medOfThree(a, b, c) {
 // EXTRA:   try for efficiency (hint: sqrt without sqrt)
 //
 function isPrime(integer) {
+    // Negative integers cannot be prime
+    // Stay away from my sqrt loop
+    if (integer < 0) return false;
+
     let sqrt = integer / 2;
 
     // Do some iterations to get sqrt to be.. approximately an int
     for (let i = 0; i < 5; i++) {
         sqrt = (sqrt + integer / sqrt) / 2;
     }
+
+    console.log(sqrt);
 
     for (let i = 2; i <= sqrt; i++) {
         if (integer % i === 0) return false;
