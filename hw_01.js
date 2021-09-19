@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 // jsfiddle: https://jsfiddle.net/o7cqxhks/
 
@@ -11,9 +11,8 @@
 // MARKING: 1 point
 //
 function abs(number) {
-    return number < 0 ? number * -1 : number;
+  return number < 0 ? number * -1 : number;
 }
-
 
 // MAXIMUM OF TWO
 // --------------
@@ -24,9 +23,8 @@ function abs(number) {
 // MARKING: 1 point
 //
 function maxOfTwo(a, b) {
-    return b > a ? b : a;
+  return b > a ? b : a;
 }
-
 
 // MAXIMUM OF THREE
 // ----------------
@@ -36,9 +34,8 @@ function maxOfTwo(a, b) {
 // MARKING: 1 point
 //
 function maxOfThree(a, b, c) {
-    return maxOfTwo(maxOfTwo(a, b), c);
+  return maxOfTwo(maxOfTwo(a, b), c);
 }
-
 
 // MEDIAN OF THREE
 // ---------------
@@ -49,64 +46,61 @@ function maxOfThree(a, b, c) {
 // MARKING: 2 points
 //
 function medOfThree(a, b, c) {
-    if ((b <= a && a <= c) || (c <= a && a <= b)) return a;
-    if ((a <= b && b <= c) || (c <= b && b <= a)) return b;
-    return c;
+  if ((b <= a && a <= c) || (c <= a && a <= b)) return a;
+  if ((a <= b && b <= c) || (c <= b && b <= a)) return b;
+  return c;
 }
-
 
 // TEST FOR PRIMALITY
 // ------------------
 //
 // Return `true` if `integer` is prime, otherwise `false`
 //
-// "A prime number is a natural number greater than 1 that has 
+// "A prime number is a natural number greater than 1 that has
 // no positive divisors other than 1 and itself."
 // --- http://en.wikipedia.org/wiki/Prime_number
-// 
+//
 // You may assume that `integer` is, indeed, an integer.
 // You may not assume anything else about it!
-// 
+//
 // MARKING: 3 points for correctness
 // EXTRA:   try for efficiency (hint: sqrt without sqrt)
 //
 function isPrime(integer) {
-    if (integer <= 1) return false;
-    if (integer === 2) return true;
-    if (integer % 2 === 0) return false;
+  if (integer <= 1) return false;
+  if (integer === 2) return true;
+  if (integer % 2 === 0) return false;
 
-    for (let i = 3; i*i <= integer; i += 2) {
-        if (integer % i === 0) return false;
-    }
+  for (let i = 3; i * i <= integer; i += 2) {
+    if (integer % i === 0) return false;
+  }
 
-    return true;
+  return true;
 }
-
 
 // STRING REVERSAL
 // ---------------
 //
 // Return a reversed version of the given string, `str`
-// e.g. reverseString("doogyrev") === "verygood" 
+// e.g. reverseString("doogyrev") === "verygood"
 //
 // You do not have to worry about full Unicode support.
 // The test strings will be within the standard ASCII range.
 //
-// BTW: The constraints of this exercise may force you into an inefficient 
+// BTW: The constraints of this exercise may force you into an inefficient
 // (but simple) solution. Don't worry about the inefficiency.
 //
 // MARKING: 2 point
 //
 function reverseString(str) {
-    let res = '';
+  let res = '';
 
-    for (let i = str.length - 1; i >= 0; i--) {
-        res += str[i];
-    }
+  for (let i = str.length - 1; i >= 0; i--) {
+    res += str[i];
+  }
 
-    return res;
+  return res;
 }
-
 
 // PUNCTUATION
 // -----------
@@ -120,15 +114,14 @@ function reverseString(str) {
 // MARKING: 1 point
 //
 function isPunct(chr) {
-    const punctuation = ',!.:;/()';
+  const punctuation = ',!.:;/()';
 
-    for (let i = 0; i < punctuation.length; i++) {
-        if (chr === punctuation[i]) return true;
-    }
+  for (let i = 0; i < punctuation.length; i++) {
+    if (chr === punctuation[i]) return true;
+  }
 
-    return false;
+  return false;
 }
-
 
 // EXTRACT WORDS
 // -------------
@@ -153,28 +146,27 @@ function isPunct(chr) {
 // MARKING: 3 points
 //
 function extractWords(str) {
-    const res = [];
-    let seq = 0;
-    let currWord = '';
-    let isWord = false;
+  const res = [];
+  let seq = 0;
+  let currWord = '';
+  let isWord = false;
 
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] !== ' ' && !isPunct(str[i])) {
-            isWord = true;
-            currWord += str[i];
-        } else if (isWord) {
-            isWord = false;
-            res[seq] = currWord;
-            currWord = '';
-            seq++;
-        }
+  for (let i = 0; i < str.length; i++) {
+    if (str[i] !== ' ' && !isPunct(str[i])) {
+      isWord = true;
+      currWord += str[i];
+    } else if (isWord) {
+      isWord = false;
+      res[seq] = currWord;
+      currWord = '';
+      seq++;
     }
+  }
 
-    if (isWord) res[seq] = currWord;
+  if (isWord) res[seq] = currWord;
 
-    return res;
+  return res;
 }
-
 
 // DECODE MNEMONIC
 // ---------------
@@ -190,7 +182,7 @@ function extractWords(str) {
 //
 // decodeMnemonic(
 //    "Now I need a drink, alcoholic of course, " +
-//    "after the heavy lectures!") === "314159265358" 
+//    "after the heavy lectures!") === "314159265358"
 //
 // decodeMnemonic(
 //    "Now I, even I, would celebrate in rhymes inept, " +
@@ -198,7 +190,7 @@ function extractWords(str) {
 //    "who in his wondrous lore, passed on before, " +
 //    "gave men his guidance how to circles mensurate.") ===
 //    "3141592653589793238462643383279"
-// 
+//
 // REFERENCE: http://www.exploratorium.edu/pi/history_of_pi/
 //
 // Unfortunately, reasons of space prevent me from including this
@@ -209,12 +201,12 @@ function extractWords(str) {
 // MARKING: 2 points
 //
 function decodeMnemonic(str) {
-    const words = extractWords(str);
-    let res = '';
+  const words = extractWords(str);
+  let res = '';
 
-    for (let i = 0; i < words.length; i++) {
-        res += words[i].length;
-    }
+  for (let i = 0; i < words.length; i++) {
+    res += words[i].length;
+  }
 
-    return res;
+  return res;
 }
