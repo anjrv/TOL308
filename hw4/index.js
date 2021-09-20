@@ -29,13 +29,14 @@
 /* jshint browser: true, devel: true, globalstrict: true */
 
 const g_canvas = document.getElementById('myCanvas');
-let g_ctx = g_canvas.getContext('2d');
+const g_ctx = g_canvas.getContext('2d');
 g_ctx.font = 'bold 40px Arial';
 g_ctx.textAlign = 'center';
 
 // Quantity of trail smileys,
 // Careful - large numbers chug
 const g_trailSize = 10;
+const diff = (1 / 37) * 2 * Math.PI;
 
 /*
 0        1         2         3         4         5         6         7         8         9
@@ -118,8 +119,17 @@ Paddle.prototype.update = function () {
 
 Paddle.prototype.render = function (ctx) {
   // (cx, cy) is the centre; must offset it for drawing
-  ctx.fillStyle = 'black';
+  ctx.fillStyle = this.fill;
+  ctx.strokeStyle = this.outline;
+
   ctx.fillRect(
+    this.cx - this.halfWidth,
+    this.cy - this.halfHeight,
+    this.halfWidth * 2,
+    this.halfHeight * 2
+  );
+  
+  ctx.strokeRect(
     this.cx - this.halfWidth,
     this.cy - this.halfHeight,
     this.halfWidth * 2,
@@ -162,6 +172,8 @@ const g_paddle1 = new Paddle({
   cx: 30,
   cy: 100,
   anchor: 0,
+  fill: 'white',
+  outline: 'black',
 
   GO_UP: KEY_W,
   GO_DOWN: KEY_S,
@@ -180,6 +192,8 @@ const g_paddle2 = new Paddle({
   cx: 370,
   cy: 300,
   anchor: 400,
+  fill: 'black',
+  outline: 'white',
 
   GO_UP: KEY_I,
   GO_DOWN: KEY_K,
@@ -198,6 +212,32 @@ function Ball(descr) {
 }
 
 Ball.prototype.radius = 10;
+Ball.prototype.angle = 0;
+
+Ball.prototype.collidesWith = function (prevX, prevY, nextX, nextY) {
+  const r = this.radius;
+  const ballEdge = this.cx;
+
+  if (
+    (nextX - r < ballEdge && prevX - r >= ballEdge) ||
+    (nextX + r > ballEdge && prevX + r <= ballEdge)
+  ) {
+    // Check Y coords
+    if (
+      nextY + r >= this.cy - r &&
+      nextY - r <= this.cy + r 
+    ) {
+      // It's a hit!
+      return true;
+    }
+  }
+  // It's a miss!
+  return false;
+};
+
+Ball.prototype.changeAngle = function () {
+  this.angle = (this.angle + 10 * diff) * Math.sign(this.xVel);
+}
 
 Ball.prototype.update = function () {
   // Remember my previous position
@@ -208,7 +248,9 @@ Ball.prototype.update = function () {
     this.trail[i] = this.trail[i - 1];
   }
 
-  this.trail[0] = [prevX, prevY];
+  if (this.trail.length > 0) {
+    this.trail[0] = [prevX, prevY];
+  }
 
   // Compute my provisional new position (barring collisions)
   const nextX = prevX + this.xVel;
@@ -220,6 +262,14 @@ Ball.prototype.update = function () {
     g_paddle2.collidesWith(prevX, prevY, nextX, nextY, this.radius)
   ) {
     this.xVel *= -1;
+    this.changeAngle();
+  }
+
+  if (this.id === 1 && g_ball2.collidesWith(prevX, prevY, nextX, nextY)) {
+    this.xVel *= -1;
+    this.yVel *= -1;
+    this.changeAngle();
+    g_ball2.changeAngle();
   }
 
   // Bounce off top and bottom edges
@@ -229,11 +279,13 @@ Ball.prototype.update = function () {
   ) {
     // bottom edge
     this.yVel *= -1;
+    this.changeAngle();
   }
 
   if (nextX < 0 || nextX > g_canvas.width) {
     this.xVel *= -1;
     this.cx < 200 ? g_paddle2.incrementScore() : g_paddle1.incrementScore();
+    this.changeAngle();
   }
 
   // *Actually* update my position
@@ -248,11 +300,12 @@ Ball.prototype.render = function (ctx) {
       ctx,
       this.trail[i][0],
       this.trail[i][1],
-      this.radius * ((g_trailSize - i) / g_trailSize)
+      this.radius * ((g_trailSize - i) / g_trailSize),
+      this.angle
     );
   }
 
-  drawSmileyAt(ctx, this.cx, this.cy, this.radius);
+  drawSmileyAt(ctx, this.cx, this.cy, this.radius, this.angle);
 };
 
 Ball.prototype.reset = function () {
@@ -271,6 +324,7 @@ const ball1StartY = randomIntFromInterval(150, 250);
 const g_ball1 = new Ball({
   cx: ball1StartX,
   cy: ball1StartY,
+  id: 1,
   // Initially there is no history, just fill our trail array with current loc
   trail: Array(g_trailSize).fill([ball1StartX, ball1StartY]),
   xVel: 5,
@@ -284,7 +338,10 @@ const ball2StartY = randomIntFromInterval(150, 250);
 const g_ball2 = new Ball({
   cx: ball2StartX,
   cy: ball2StartY,
-  trail: Array(g_trailSize).fill([ball2StartX, ball2StartY]),
+  id: 2,
+  // Slowpoke is too slow to leave a trail
+  trail: [],
+  // trail: Array(g_trailSize).fill([ball2StartX, ball2StartY]),
   // For this one flip the direction so both aren't thrown at the same player
   xVel: -g_ball1.xVel / 2,
   yVel: -g_ball1.yVel / 2,
@@ -299,7 +356,11 @@ function randomIntFromInterval(min, max) {
 }
 
 function clearCanvas(ctx) {
-  ctx.fillStyle = 'white';
+  const bgGradient = ctx.createLinearGradient(0, 0, 200, 0);
+  bgGradient.addColorStop(0, "black");
+  bgGradient.addColorStop(0.5 ,"purple");
+  bgGradient.addColorStop(1, "white");
+  ctx.fillStyle = bgGradient;
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 }
 
@@ -478,9 +539,15 @@ function renderSimulation(ctx) {
 // ========
 
 function showScores(ctx) {
-  ctx.fillStyle = 'black';
+  ctx.fillStyle = g_paddle1.fill;
+  ctx.strokeStyle = g_paddle1.outline;
   ctx.fillText(g_paddle1.score, (g_canvas.width / 10) * 4, 40);
+  ctx.strokeText(g_paddle1.score, (g_canvas.width / 10) * 4, 40);
+
+  ctx.fillStyle = g_paddle2.fill;
+  ctx.strokeStyle = g_paddle2.outline;
   ctx.fillText(g_paddle2.score, (g_canvas.width / 10) * 6, 40);
+  ctx.strokeText(g_paddle2.score, (g_canvas.width / 10) * 6, 40);
 }
 
 function mainIter() {
