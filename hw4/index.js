@@ -128,7 +128,7 @@ Paddle.prototype.render = function (ctx) {
     this.halfWidth * 2,
     this.halfHeight * 2
   );
-  
+
   ctx.strokeRect(
     this.cx - this.halfWidth,
     this.cy - this.halfHeight,
@@ -222,22 +222,17 @@ Ball.prototype.collidesWith = function (prevX, prevY, nextX, nextY) {
     (nextX - r < ballEdge && prevX - r >= ballEdge) ||
     (nextX + r > ballEdge && prevX + r <= ballEdge)
   ) {
-    // Check Y coords
-    if (
-      nextY + r >= this.cy - r &&
-      nextY - r <= this.cy + r 
-    ) {
-      // It's a hit!
+    if (nextY + r >= this.cy - r && nextY - r <= this.cy + r) {
       return true;
     }
   }
-  // It's a miss!
+
   return false;
 };
 
 Ball.prototype.changeAngle = function () {
   this.angle = (this.angle + 10 * diff) * Math.sign(this.xVel);
-}
+};
 
 Ball.prototype.update = function () {
   // Remember my previous position
@@ -357,9 +352,9 @@ function randomIntFromInterval(min, max) {
 
 function clearCanvas(ctx) {
   const bgGradient = ctx.createLinearGradient(0, 0, 200, 0);
-  bgGradient.addColorStop(0, "black");
-  bgGradient.addColorStop(0.5 ,"purple");
-  bgGradient.addColorStop(1, "white");
+  bgGradient.addColorStop(0, 'black');
+  bgGradient.addColorStop(0.5, 'purple');
+  bgGradient.addColorStop(1, 'white');
   ctx.fillStyle = bgGradient;
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 }
