@@ -417,10 +417,9 @@ function drawSmile(ctx) {
 
 function splatter(ctx) {
   // Smaller shadow on blood
-  ctx.shadowOffsetX = 1;
-  ctx.shadowOffsetY = 1;
+  // ctx.shadowOffsetX = 1;
+  // ctx.shadowOffsetY = 1;
   ctx.fillStyle = '#bd0111';
-
   ctx.beginPath();
   ctx.moveTo(95, 95);
   ctx.bezierCurveTo(95, 110, 130, 110, 130, 120);
@@ -440,12 +439,12 @@ function splatter(ctx) {
 function drawDefaultSmiley(ctx) {
   drawBackground(ctx);
 
-  ctx.shadowOffsetX = 3;
-  ctx.shadowOffsetY = 3;
-  ctx.shadowBlur = 1;
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-  ctx.fillStyle = 'black';
+  // ctx.shadowOffsetX = 3;
+  // ctx.shadowOffsetY = 3;
+  // ctx.shadowBlur = 1;
+  // ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
 
+  ctx.fillStyle = 'black';
   fillEllipse(ctx, 150, 150, 10, 40, Math.PI);
   fillEllipse(ctx, 250, 150, 10, 40, Math.PI);
   drawSmile(ctx);
