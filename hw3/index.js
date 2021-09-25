@@ -75,38 +75,38 @@ var g_keys = [];
 // ================
 
 function clear() {
-  g_ctx.clearRect(0, 0, g_canvas.width, g_canvas.height);
+	g_ctx.clearRect(0, 0, g_canvas.width, g_canvas.height);
 }
 
 function drawBackground() {
-  drawDefaultSmiley(g_ctx);
-  drawSmileyAt(g_ctx, 25, 375, 25, -Math.PI / 8);
+	drawDefaultSmiley(g_ctx);
+	drawSmileyAt(g_ctx, 25, 375, 25, -Math.PI / 8);
 }
 
 function drawForeground() {
-  drawSmileyAt(g_ctx, 25, 375, 25, Math.PI / 8);
-  drawSmileyAt(g_ctx, 300, 300, 100, -g_smiley.angle);
+	drawSmileyAt(g_ctx, 25, 375, 25, Math.PI / 8);
+	drawSmileyAt(g_ctx, 300, 300, 100, -g_smiley.angle);
 }
 
 function fillEllipse(ctx, cx, cy, halfWidth, halfHeight, angle) {
-  ctx.save(); // save the current ctx state, to restore later
-  ctx.beginPath();
+	ctx.save(); // save the current ctx state, to restore later
+	ctx.beginPath();
 
-  // These "matrix ops" are applied in last-to-first order
-  // ..which can seem a bit weird, but actually makes sense
-  //
-  // After modifying the ctx state like this, it's important
-  // to restore it
-  ctx.translate(cx, cy);
-  ctx.rotate(angle);
-  ctx.scale(halfWidth, halfHeight);
+	// These "matrix ops" are applied in last-to-first order
+	// ..which can seem a bit weird, but actually makes sense
+	//
+	// After modifying the ctx state like this, it's important
+	// to restore it
+	ctx.translate(cx, cy);
+	ctx.rotate(angle);
+	ctx.scale(halfWidth, halfHeight);
 
-  // Just draw a unit circle, and let the matrices do the rest!
-  ctx.arc(0, 0, 1, 0, Math.PI * 2);
-  ctx.fill();
+	// Just draw a unit circle, and let the matrices do the rest!
+	ctx.arc(0, 0, 1, 0, Math.PI * 2);
+	ctx.fill();
 
-  ctx.beginPath();
-  ctx.restore();
+	ctx.beginPath();
+	ctx.restore();
 }
 
 // =================
@@ -114,18 +114,18 @@ function fillEllipse(ctx, cx, cy, halfWidth, halfHeight, angle) {
 // =================
 
 function drawSmileyAt(ctx, cx, cy, radius, angle) {
-  // This matrix trickery lets me take a "default smiley",
-  // and transform it so I can draw it anyway, at any size,
-  // and at any angle.
-  //
-  ctx.save();
-  ctx.translate(cx, cy);
-  ctx.rotate(angle);
-  var scale = radius / g_defaultSmileyRadius;
-  ctx.scale(scale, scale);
-  ctx.translate(-g_defaultSmileyX, -g_defaultSmileyY);
-  drawDefaultSmiley(ctx);
-  ctx.restore();
+	// This matrix trickery lets me take a "default smiley",
+	// and transform it so I can draw it anyway, at any size,
+	// and at any angle.
+	//
+	ctx.save();
+	ctx.translate(cx, cy);
+	ctx.rotate(angle);
+	var scale = radius / g_defaultSmileyRadius;
+	ctx.scale(scale, scale);
+	ctx.translate(-g_defaultSmileyX, -g_defaultSmileyY);
+	drawDefaultSmiley(ctx);
+	ctx.restore();
 }
 
 // =================
@@ -136,11 +136,11 @@ function drawSmileyAt(ctx, cx, cy, radius, angle) {
 // little javascript object. (Global for "convenience").
 //
 var g_smiley = {
-  x: 350,
-  y: 50,
+	x: 350,
+	y: 50,
 
-  radius: 50,
-  angle: 0,
+	radius: 50,
+	angle: 0,
 };
 
 // Let's add a draw method...
@@ -149,7 +149,7 @@ var g_smiley = {
 // cleaner to add the functions separately, to reduce indentation.)
 //
 g_smiley.draw = function () {
-  drawSmileyAt(g_ctx, this.x, this.y, this.radius, this.angle);
+	drawSmileyAt(g_ctx, this.x, this.y, this.radius, this.angle);
 };
 
 // You *might* want to add other methods here, as part of your
@@ -162,9 +162,9 @@ g_smiley.draw = function () {
 // which belong to the object itself.
 
 function strokeArc(ctx, x, y, radius, startAngle, endAngle) {
-  ctx.beginPath();
-  ctx.arc(x, y, radius, startAngle, endAngle);
-  ctx.stroke();
+	ctx.beginPath();
+	ctx.arc(x, y, radius, startAngle, endAngle);
+	ctx.stroke();
 }
 
 // =====================================================
@@ -172,91 +172,91 @@ function strokeArc(ctx, x, y, radius, startAngle, endAngle) {
 // =====================================================
 
 var g_defaultSmileyX = 200,
-  g_defaultSmileyY = 200,
-  g_defaultSmileyRadius = 150;
+	g_defaultSmileyY = 200,
+	g_defaultSmileyRadius = 150;
 
 function drawbg(ctx) {
-  ctx.arc(
-    g_defaultSmileyX,
-    g_defaultSmileyY,
-    g_defaultSmileyRadius,
-    0,
-    2 * Math.PI
-  );
+	ctx.arc(
+		g_defaultSmileyX,
+		g_defaultSmileyY,
+		g_defaultSmileyRadius,
+		0,
+		2 * Math.PI
+	);
 
-  ctx.closePath();
-  ctx.fill();
-  ctx.lineWidth = 1;
-  ctx.stroke();
+	ctx.closePath();
+	ctx.fill();
+	ctx.lineWidth = 1;
+	ctx.stroke();
 }
 
 function drawSmile(ctx) {
-  ctx.beginPath();
-  ctx.moveTo(120, 240);
-  ctx.bezierCurveTo(120, 290, 280, 290, 280, 240);
-  ctx.bezierCurveTo(280, 300, 120, 300, 120, 240);
-  ctx.closePath();
-  ctx.fill();
-  ctx.lineWidth = 2;
-  ctx.stroke();
+	ctx.beginPath();
+	ctx.moveTo(120, 240);
+	ctx.bezierCurveTo(120, 290, 280, 290, 280, 240);
+	ctx.bezierCurveTo(280, 300, 120, 300, 120, 240);
+	ctx.closePath();
+	ctx.fill();
+	ctx.lineWidth = 2;
+	ctx.stroke();
 }
 
 function splatter(ctx) {
-  ctx.beginPath();
-  ctx.moveTo(95, 95);
-  ctx.bezierCurveTo(95, 110, 130, 110, 130, 120);
-  ctx.bezierCurveTo(130, 125, 110, 125, 110, 115);
-  ctx.bezierCurveTo(110, 150, 180, 150, 180, 180);
-  ctx.bezierCurveTo(180, 200, 110, 125, 100, 130);
-  ctx.bezierCurveTo(100, 160, 130, 170, 130, 180);
-  ctx.bezierCurveTo(130, 200, 100, 150, 75, 130);
-  ctx.bezierCurveTo(75, 130, 75, 130, 73, 125);
-  ctx.bezierCurveTo(75, 105, 99, 96, 97, 95);
-  ctx.closePath();
-  ctx.fill();
-  ctx.stroke();
-  ctx.beginPath();
+	ctx.beginPath();
+	ctx.moveTo(95, 95);
+	ctx.bezierCurveTo(95, 110, 130, 110, 130, 120);
+	ctx.bezierCurveTo(130, 125, 110, 125, 110, 115);
+	ctx.bezierCurveTo(110, 150, 180, 150, 180, 180);
+	ctx.bezierCurveTo(180, 200, 110, 125, 100, 130);
+	ctx.bezierCurveTo(100, 160, 130, 170, 130, 180);
+	ctx.bezierCurveTo(130, 200, 100, 150, 75, 130);
+	ctx.bezierCurveTo(75, 130, 75, 130, 73, 125);
+	ctx.bezierCurveTo(75, 105, 99, 96, 97, 95);
+	ctx.closePath();
+	ctx.fill();
+	ctx.stroke();
+	ctx.beginPath();
 }
 
 function drawDefaultSmiley(ctx) {
-  // Circle itself and gradient
-  ctx.save();
+	// Circle itself and gradient
+	ctx.save();
 
-  var gradient = ctx.createRadialGradient(
-    g_defaultSmileyX,
-    g_defaultSmileyY,
-    g_defaultSmileyRadius - 15,
-    g_defaultSmileyX,
-    g_defaultSmileyY,
-    g_defaultSmileyRadius
-  );
+	var gradient = ctx.createRadialGradient(
+		g_defaultSmileyX,
+		g_defaultSmileyY,
+		g_defaultSmileyRadius - 15,
+		g_defaultSmileyX,
+		g_defaultSmileyY,
+		g_defaultSmileyRadius
+	);
 
-  gradient.addColorStop(0, '#ffd000');
-  gradient.addColorStop(1, 'gray');
-  ctx.fillStyle = gradient;
-  drawbg(ctx);
-  // Add some drop shadow to facial features
-  // to match gradient
-  ctx.shadowOffsetX = 3;
-  ctx.shadowOffsetY = 3;
-  ctx.shadowBlur = 1;
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-  ctx.fillStyle = 'black';
-  // Eyes
-  fillEllipse(ctx, 150, 150, 10, 40, Math.PI);
-  fillEllipse(ctx, 250, 150, 10, 40, Math.PI);
-  // Smile
-  drawSmile(ctx);
-  // Cheeks
-  fillEllipse(ctx, 120, 240, 3, 14, 0.4 * Math.PI);
-  fillEllipse(ctx, 280, 240, 3, 14, 0.6 * Math.PI);
-  // Splatter
-  ctx.shadowOffsetX = 1;
-  ctx.shadowOffsetY = 1;
-  ctx.fillStyle = '#bd0111';
-  splatter(ctx);
+	gradient.addColorStop(0, '#ffd000');
+	gradient.addColorStop(1, 'gray');
+	ctx.fillStyle = gradient;
+	drawbg(ctx);
+	// Add some drop shadow to facial features
+	// to match gradient
+	ctx.shadowOffsetX = 3;
+	ctx.shadowOffsetY = 3;
+	ctx.shadowBlur = 1;
+	ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+	ctx.fillStyle = 'black';
+	// Eyes
+	fillEllipse(ctx, 150, 150, 10, 40, Math.PI);
+	fillEllipse(ctx, 250, 150, 10, 40, Math.PI);
+	// Smile
+	drawSmile(ctx);
+	// Cheeks
+	fillEllipse(ctx, 120, 240, 3, 14, 0.4 * Math.PI);
+	fillEllipse(ctx, 280, 240, 3, 14, 0.6 * Math.PI);
+	// Splatter
+	ctx.shadowOffsetX = 1;
+	ctx.shadowOffsetY = 1;
+	ctx.fillStyle = '#bd0111';
+	splatter(ctx);
 
-  ctx.restore();
+	ctx.restore();
 }
 
 // ======
@@ -269,13 +269,13 @@ function drawDefaultSmiley(ctx) {
 // dealing with the "trail" etc).
 //
 function redraw() {
-  if (!g_trail) {
-    refreshBackground();
-  }
+	if (!g_trail) {
+		refreshBackground();
+	}
 
-  g_smiley.draw();
+	g_smiley.draw();
 
-  refreshForeground();
+	refreshForeground();
 }
 
 // ========================================
@@ -283,122 +283,122 @@ function redraw() {
 // ========================================
 
 function refreshBackground() {
-  if (g_background) {
-    clear();
-    drawBackground();
-  } else {
-    clear();
-  }
+	if (g_background) {
+		clear();
+		drawBackground();
+	} else {
+		clear();
+	}
 }
 
 function refreshForeground() {
-  if (g_foreground) {
-    drawForeground();
-  }
+	if (g_foreground) {
+		drawForeground();
+	}
 }
 
 function leftRight() {
-  if (g_keys[65]) g_smiley.x -= 10;
+	if (g_keys[65]) g_smiley.x -= 10;
 
-  if (g_keys[68]) g_smiley.x += 10;
+	if (g_keys[68]) g_smiley.x += 10;
 }
 
 function upDown() {
-  if (g_keys[87]) g_smiley.y -= 10;
+	if (g_keys[87]) g_smiley.y -= 10;
 
-  if (g_keys[83]) g_smiley.y += 10;
+	if (g_keys[83]) g_smiley.y += 10;
 }
 
 function shrinkGrow() {
-  if (g_keys[79]) g_smiley.radius /= 1.1;
+	if (g_keys[79]) g_smiley.radius /= 1.1;
 
-  if (g_keys[80]) g_smiley.radius *= 1.1;
+	if (g_keys[80]) g_smiley.radius *= 1.1;
 }
 
 function swivel() {
-  var diff = (1 / 37) * 2 * Math.PI;
+	var diff = (1 / 37) * 2 * Math.PI;
 
-  if (g_keys[81]) g_smiley.angle -= diff;
+	if (g_keys[81]) g_smiley.angle -= diff;
 
-  if (g_keys[69]) g_smiley.angle += diff;
+	if (g_keys[69]) g_smiley.angle += diff;
 }
 
 function handleMouse(evt) {
-  g_smiley.x = evt.clientX;
-  g_smiley.y = evt.clientY;
+	g_smiley.x = evt.clientX;
+	g_smiley.y = evt.clientY;
 
-  redraw();
+	redraw();
 }
 
 function toggleMouse() {
-  if (g_keys[77]) g_mousemove = !g_mousemove;
+	if (g_keys[77]) g_mousemove = !g_mousemove;
 
-  if (g_mousemove) {
-    window.addEventListener('mousemove', handleMouse);
-  } else {
-    window.removeEventListener('mousemove', handleMouse);
-  }
+	if (g_mousemove) {
+		window.addEventListener('mousemove', handleMouse);
+	} else {
+		window.removeEventListener('mousemove', handleMouse);
+	}
 }
 
 function toggleForeground() {
-  if (g_keys[70]) {
-    g_foreground = !g_foreground;
+	if (g_keys[70]) {
+		g_foreground = !g_foreground;
 
-    if (!g_foreground) {
-      refreshBackground();
-    }
-  }
+		if (!g_foreground) {
+			refreshBackground();
+		}
+	}
 }
 
 function toggleBackground() {
-  if (g_keys[66]) {
-    g_background = !g_background;
-    refreshBackground();
-  }
+	if (g_keys[66]) {
+		g_background = !g_background;
+		refreshBackground();
+	}
 }
 
 function handleKeydown(evt) {
-  g_keys[evt.keyCode] = true;
+	g_keys[evt.keyCode] = true;
 
-  // Trail toggle
-  // T
-  if (g_keys[84]) g_trail = !g_trail;
+	// Trail toggle
+	// T
+	if (g_keys[84]) g_trail = !g_trail;
 
-  // Foreground toggle, redraw handles actual drawing
-  // F
-  toggleForeground();
+	// Foreground toggle, redraw handles actual drawing
+	// F
+	toggleForeground();
 
-  // Background toggle, this is drawn once
-  // To make it actually stay behind the trail
-  // B
-  toggleBackground();
+	// Background toggle, this is drawn once
+	// To make it actually stay behind the trail
+	// B
+	toggleBackground();
 
-  // Toggle mouse event listener
-  // M
-  toggleMouse();
+	// Toggle mouse event listener
+	// M
+	toggleMouse();
 
-  // A / D
-  leftRight();
+	// A / D
+	leftRight();
 
-  // W / S
-  upDown();
+	// W / S
+	upDown();
 
-  // O / P
-  shrinkGrow();
+	// O / P
+	shrinkGrow();
 
-  // Q / E
-  swivel();
+	// Q / E
+	swivel();
 
-  redraw();
+	redraw();
 }
 
 function handleKeyup(evt) {
-  g_keys[evt.keyCode] = false;
+	g_keys[evt.keyCode] = false;
 }
 
 function initKeyboardHandlers() {
-  window.addEventListener('keydown', handleKeydown);
-  window.addEventListener('keyup', handleKeyup);
+	window.addEventListener('keydown', handleKeydown);
+	window.addEventListener('keyup', handleKeyup);
 }
 
 initKeyboardHandlers();

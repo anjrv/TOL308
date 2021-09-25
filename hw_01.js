@@ -11,7 +11,7 @@
 // MARKING: 1 point
 //
 function abs(number) {
-  return number < 0 ? number * -1 : number;
+	return number < 0 ? number * -1 : number;
 }
 
 // MAXIMUM OF TWO
@@ -23,7 +23,7 @@ function abs(number) {
 // MARKING: 1 point
 //
 function maxOfTwo(a, b) {
-  return b > a ? b : a;
+	return b > a ? b : a;
 }
 
 // MAXIMUM OF THREE
@@ -34,7 +34,7 @@ function maxOfTwo(a, b) {
 // MARKING: 1 point
 //
 function maxOfThree(a, b, c) {
-  return maxOfTwo(maxOfTwo(a, b), c);
+	return maxOfTwo(maxOfTwo(a, b), c);
 }
 
 // MEDIAN OF THREE
@@ -46,9 +46,9 @@ function maxOfThree(a, b, c) {
 // MARKING: 2 points
 //
 function medOfThree(a, b, c) {
-  if ((b <= a && a <= c) || (c <= a && a <= b)) return a;
-  if ((a <= b && b <= c) || (c <= b && b <= a)) return b;
-  return c;
+	if ((b <= a && a <= c) || (c <= a && a <= b)) return a;
+	if ((a <= b && b <= c) || (c <= b && b <= a)) return b;
+	return c;
 }
 
 // TEST FOR PRIMALITY
@@ -67,15 +67,15 @@ function medOfThree(a, b, c) {
 // EXTRA:   try for efficiency (hint: sqrt without sqrt)
 //
 function isPrime(integer) {
-  if (integer <= 1) return false;
-  if (integer === 2) return true;
-  if (integer % 2 === 0) return false;
+	if (integer <= 1) return false;
+	if (integer === 2) return true;
+	if (integer % 2 === 0) return false;
 
-  for (let i = 3; i * i <= integer; i += 2) {
-    if (integer % i === 0) return false;
-  }
+	for (let i = 3; i * i <= integer; i += 2) {
+		if (integer % i === 0) return false;
+	}
 
-  return true;
+	return true;
 }
 
 // STRING REVERSAL
@@ -93,13 +93,13 @@ function isPrime(integer) {
 // MARKING: 2 point
 //
 function reverseString(str) {
-  let res = '';
+	let res = '';
 
-  for (let i = str.length - 1; i >= 0; i--) {
-    res += str[i];
-  }
+	for (let i = str.length - 1; i >= 0; i--) {
+		res += str[i];
+	}
 
-  return res;
+	return res;
 }
 
 // PUNCTUATION
@@ -114,13 +114,13 @@ function reverseString(str) {
 // MARKING: 1 point
 //
 function isPunct(chr) {
-  const punctuation = ',!.:;/()';
+	const punctuation = ',!.:;/()';
 
-  for (let i = 0; i < punctuation.length; i++) {
-    if (chr === punctuation[i]) return true;
-  }
+	for (let i = 0; i < punctuation.length; i++) {
+		if (chr === punctuation[i]) return true;
+	}
 
-  return false;
+	return false;
 }
 
 // EXTRACT WORDS
@@ -146,26 +146,26 @@ function isPunct(chr) {
 // MARKING: 3 points
 //
 function extractWords(str) {
-  const res = [];
-  let seq = 0;
-  let currWord = '';
-  let isWord = false;
+	const res = [];
+	let seq = 0;
+	let currWord = '';
+	let isWord = false;
 
-  for (let i = 0; i < str.length; i++) {
-    if (str[i] !== ' ' && !isPunct(str[i])) {
-      isWord = true;
-      currWord += str[i];
-    } else if (isWord) {
-      isWord = false;
-      res[seq] = currWord;
-      currWord = '';
-      seq++;
-    }
-  }
+	for (let i = 0; i < str.length; i++) {
+		if (str[i] !== ' ' && !isPunct(str[i])) {
+			isWord = true;
+			currWord += str[i];
+		} else if (isWord) {
+			isWord = false;
+			res[seq] = currWord;
+			currWord = '';
+			seq++;
+		}
+	}
 
-  if (isWord) res[seq] = currWord;
+	if (isWord) res[seq] = currWord;
 
-  return res;
+	return res;
 }
 
 // DECODE MNEMONIC
@@ -201,12 +201,12 @@ function extractWords(str) {
 // MARKING: 2 points
 //
 function decodeMnemonic(str) {
-  const words = extractWords(str);
-  let res = '';
+	const words = extractWords(str);
+	let res = '';
 
-  for (let i = 0; i < words.length; i++) {
-    res += words[i].length;
-  }
+	for (let i = 0; i < words.length; i++) {
+		res += words[i].length;
+	}
 
-  return res;
+	return res;
 }
