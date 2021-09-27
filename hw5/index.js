@@ -184,7 +184,7 @@ Sprite.prototype.drawWrappedCentredAt = function (ctx, cx, cy, rotation) {
     this.drawCentredAt(ctx, cx, cy + ctxHeight, rotation);
 
     if (newX) {
-      const offsetX = cx > 200 ? cx - ctxWidth : cx + ctxWidth;
+      const offsetX = cx > ctxWidth/2 ? cx - ctxWidth : cx + ctxWidth;
       this.drawCentredAt(ctx, offsetX, cy - ctxHeight, rotation);
     }
   }
@@ -193,7 +193,7 @@ Sprite.prototype.drawWrappedCentredAt = function (ctx, cx, cy, rotation) {
     this.drawCentredAt(ctx, cx, cy - ctxHeight, rotation);
 
     if (newX) {
-      const offsetX = cx > 200 ? cx - ctxWidth : cx + ctxWidth;
+      const offsetX = cx > ctxWidth/2 ? cx - ctxWidth : cx + ctxWidth;
       this.drawCentredAt(ctx, offsetX, cy + ctxHeight, rotation);
     }
   }
