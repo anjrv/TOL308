@@ -143,21 +143,21 @@ Sprite.prototype.drawCentredAt = function (ctx, cx, cy, rotation = 0) {
   ctx.restore();
 };
 
-Sprite.prototype.collidesLeft = function (ctx, cx) {
+Sprite.prototype.collidesLeft = function (cx) {
   return cx - this.width / 2 < 0;
 };
 
-Sprite.prototype.collidesRight = function (ctx, cx) {
-  const ctxWidth = ctx.canvas.clientWidth;
+Sprite.prototype.collidesRight = function (cx) {
+  const ctxWidth = g_ctx.canvas.clientWidth;
   return cx + this.width / 2 > ctxWidth;
 };
 
-Sprite.prototype.collidesUp = function (ctx, cy) {
+Sprite.prototype.collidesUp = function (cy) {
   return cy - this.height / 2 < 0;
 };
 
-Sprite.prototype.collidesDown = function (ctx, cy) {
-  const ctxHeight = ctx.canvas.clientHeight;
+Sprite.prototype.collidesDown = function (cy) {
+  const ctxHeight = g_ctx.canvas.clientHeight;
   return cy + this.height / 2 > ctxHeight;
 };
 
