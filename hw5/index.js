@@ -472,17 +472,9 @@ const KEY_RESET = keyCode('R');
 function processDiagnostics() {
   // Handle these simple diagnostic options,
   // as defined by the KEY identifiers above.
-  if (eatKey(KEY_EXTRAS)) {
-    g_useExtras = !g_useExtras;
-  }
-
-  if (eatKey(KEY_GRAVITY)) {
-    g_useGravity = !g_useGravity;
-  }
-
-  if (eatKey(KEY_MIXED)) {
-    g_allowMixedActions = !g_allowMixedActions;
-  }
+  if (eatKey(KEY_EXTRAS)) g_useExtras = !g_useExtras;
+  if (eatKey(KEY_GRAVITY)) g_useGravity = !g_useGravity;
+  if (eatKey(KEY_MIXED)) g_allowMixedActions = !g_allowMixedActions;
 
   if (g_keys[KEY_HALT]) {
     g_ship.halt();
