@@ -67,8 +67,8 @@ Create additional helper-functions as and when you need them.
 
 /* jshint browser: true, devel: true, globalstrict: true */
 
-var g_canvas = document.getElementById('myCanvas');
-var g_ctx = g_canvas.getContext('2d');
+const g_canvas = document.getElementById('myCanvas');
+const g_ctx = g_canvas.getContext('2d');
 
 /*
 0        1         2         3         4         5         6         7         8         9
@@ -79,7 +79,7 @@ var g_ctx = g_canvas.getContext('2d');
 // KEYBOARD HANDLING
 // =================
 
-var g_keys = [];
+const g_keys = [];
 
 function handleKeydown(evt) {
   g_keys[evt.keyCode] = true;
@@ -95,7 +95,7 @@ function handleKeyup(evt) {
 // ..until the auto-repeat kicks in, that is.
 //
 function eatKey(keyCode) {
-  var isDown = g_keys[keyCode];
+  const isDown = g_keys[keyCode];
   g_keys[keyCode] = false;
   return isDown;
 }
@@ -111,8 +111,8 @@ function handleMouse(evt) {
   // If no button is being pressed, then ignore
   if (!evt.which) return;
 
-  var x = evt.clientX - g_canvas.offsetLeft;
-  var y = evt.clientY - g_canvas.offsetTop;
+  const x = evt.clientX - g_canvas.offsetLeft;
+  const y = evt.clientY - g_canvas.offsetTop;
 
   g_ship.cx = x;
   g_ship.cy = y;
@@ -182,7 +182,7 @@ Sprite.prototype.drawWrappedCentredAt = function (ctx, cx, cy, rotation) {
     this.drawCentredAt(ctx, cx, cy + ctxHeight, rotation);
 
     if (newX) {
-      const offsetX = cx > ctxWidth/2 ? cx - ctxWidth : cx + ctxWidth;
+      const offsetX = cx > ctxWidth / 2 ? cx - ctxWidth : cx + ctxWidth;
       this.drawCentredAt(ctx, offsetX, cy - ctxHeight, rotation);
     }
   }
@@ -191,7 +191,7 @@ Sprite.prototype.drawWrappedCentredAt = function (ctx, cx, cy, rotation) {
     this.drawCentredAt(ctx, cx, cy - ctxHeight, rotation);
 
     if (newX) {
-      const offsetX = cx > ctxWidth/2 ? cx - ctxWidth : cx + ctxWidth;
+      const offsetX = cx > ctxWidth / 2 ? cx - ctxWidth : cx + ctxWidth;
       this.drawCentredAt(ctx, offsetX, cy + ctxHeight, rotation);
     }
   }
@@ -203,7 +203,7 @@ Sprite.prototype.drawWrappedCentredAt = function (ctx, cx, cy, rotation) {
 
 // A generic contructor which accepts an arbitrary descriptor object
 function Ship(descr) {
-  for (var property in descr) {
+  for (const property in descr) {
     this[property] = descr[property];
   }
 
@@ -242,11 +242,11 @@ Ship.prototype.willCollideDown = function () {
 };
 
 Ship.prototype.update = function (du) {
-  var thrust = this.computeThrustMag();
+  const thrust = this.computeThrustMag();
 
   // Apply thrust directionally, based on our rotation
-  var accelX = +Math.sin(this.rotation) * thrust;
-  var accelY = -Math.cos(this.rotation) * thrust;
+  const accelX = +Math.sin(this.rotation) * thrust;
+  let accelY = -Math.cos(this.rotation) * thrust;
 
   accelY += this.computeGravity();
 
@@ -259,19 +259,18 @@ Ship.prototype.update = function (du) {
   }
 };
 
-var NOMINAL_GRAVITY = 0.12;
+const NOMINAL_GRAVITY = 0.12;
 
 Ship.prototype.computeGravity = function () {
   // If gravity is enabled, return the NOMINAL_GRAVITY value
   // See the "GAME-SPECIFIC DIAGNOSTICS" section for details.
-  if (g_useGravity)
-    return NOMINAL_GRAVITY;
+  if (g_useGravity) return NOMINAL_GRAVITY;
 
   return 0;
 };
 
-var NOMINAL_THRUST = +0.2;
-var NOMINAL_RETRO = -0.1;
+const NOMINAL_THRUST = +0.2;
+const NOMINAL_RETRO = -0.1;
 
 Ship.prototype.computeThrustMag = function () {
   let thrust = 0;
@@ -280,7 +279,7 @@ Ship.prototype.computeThrustMag = function () {
     thrust += NOMINAL_THRUST;
   }
 
-  if (g_keys[this.KEY_RETRO] ) {
+  if (g_keys[this.KEY_RETRO]) {
     thrust += NOMINAL_RETRO;
   }
 
@@ -304,8 +303,8 @@ Ship.prototype.applyAccel = function (accelX, accelY, du) {
   const ctxHeight = g_ctx.canvas.clientHeight;
   if (
     g_useGravity &&
-    (((this.cy + this.velY * du) - (g_shipSprite.height / 2)) < 0 ||
-    ((this.cy + this.velY * du) + (g_shipSprite.height / 2)) > ctxHeight)
+    (this.cy + this.velY * du - g_shipSprite.height / 2 < 0 ||
+      this.cy + this.velY * du + g_shipSprite.height / 2 > ctxHeight)
   ) {
     this.velY = -this.velY;
     this.velY *= 0.9;
@@ -327,7 +326,7 @@ Ship.prototype.halt = function () {
   this.velY = 0;
 };
 
-var NOMINAL_ROTATE_RATE = 0.1;
+const NOMINAL_ROTATE_RATE = 0.1;
 
 Ship.prototype.updateRotation = function (du) {
   if (g_keys[this.KEY_LEFT]) {
@@ -370,17 +369,17 @@ Ship.prototype.render = function (ctx) {
 // CONSTRUCT THE SHIPS
 // -------------------
 
-var g_ship = new Ship({
+const g_ship = new Ship({
   cx: 140,
   cy: 200,
 });
 
-var g_extraShip1 = new Ship({
+const g_extraShip1 = new Ship({
   cx: 200,
   cy: 200,
 });
 
-var g_extraShip2 = new Ship({
+const g_extraShip2 = new Ship({
   cx: 260,
   cy: 200,
 });
@@ -405,7 +404,7 @@ function fillCircle(ctx, x, y, r) {
 }
 
 function fillBox(ctx, x, y, w, h, style) {
-  var oldStyle = ctx.fillStyle;
+  const oldStyle = ctx.fillStyle;
   ctx.fillStyle = style;
   ctx.fillRect(x, y, w, h);
   ctx.fillStyle = oldStyle;
@@ -459,16 +458,16 @@ function updateSimulation(du) {
 // GAME-SPECIFIC DIAGNOSTICS
 // -------------------------
 
-var g_allowMixedActions = true;
-var g_useExtras = true;
-var g_useGravity = false;
+let g_allowMixedActions = true;
+let g_useExtras = true;
+let g_useGravity = false;
 
-var KEY_EXTRAS = keyCode('E');
-var KEY_GRAVITY = keyCode('G');
-var KEY_MIXED = keyCode('M');
+const KEY_EXTRAS = keyCode('E');
+const KEY_GRAVITY = keyCode('G');
+const KEY_MIXED = keyCode('M');
 
-var KEY_HALT = keyCode('H');
-var KEY_RESET = keyCode('R');
+const KEY_HALT = keyCode('H');
+const KEY_RESET = keyCode('R');
 
 function processDiagnostics() {
   // Handle these simple diagnostic options,
@@ -505,19 +504,19 @@ function processDiagnostics() {
 // The "nominal interval" is the one that all of our time-based units are
 // calibrated to e.g. a velocity unit is "pixels per nominal interval"
 //
-var NOMINAL_UPDATE_INTERVAL = 16.666;
+const NOMINAL_UPDATE_INTERVAL = 16.666;
 
 // Dt means "delta time" and is in units of the timer-system (i.e. milliseconds)
 //
-var g_prevUpdateDt = null;
+let g_prevUpdateDt = null;
 
 // Du means "delta u", where u represents time in multiples of our nominal interval
 //
-var g_prevUpdateDu = null;
+let g_prevUpdateDu = null;
 
 // Track odds and evens for diagnostic / illustrative purposes
 //
-var g_isUpdateOdd = false;
+let g_isUpdateOdd = false;
 
 function update(dt) {
   // Get out if skipping (e.g. due to pause-mode)
@@ -526,7 +525,7 @@ function update(dt) {
 
   // Remember this for later
   //
-  var original_dt = dt;
+  let original_dt = dt;
 
   // Warn about very large dt values -- they may lead to error
   //
@@ -538,7 +537,7 @@ function update(dt) {
   // If using variable time, divide the actual delta by the "nominal" rate,
   // giving us a conveniently scaled "du" to work with.
   //
-  var du = dt / NOMINAL_UPDATE_INTERVAL;
+  let du = dt / NOMINAL_UPDATE_INTERVAL;
 
   updateSimulation(du);
 
@@ -550,10 +549,10 @@ function update(dt) {
 
 // Togglable Pause Mode
 //
-var KEY_PAUSE = 'P'.charCodeAt(0);
-var KEY_STEP = 'O'.charCodeAt(0);
+const KEY_PAUSE = 'P'.charCodeAt(0);
+const KEY_STEP = 'O'.charCodeAt(0);
 
-var g_isUpdatePaused = false;
+let g_isUpdatePaused = false;
 
 function shouldSkipUpdate() {
   if (eatKey(KEY_PAUSE)) {
@@ -590,19 +589,20 @@ function renderSimulation(ctx) {
 // GENERIC RENDERING
 // -----------------
 
-var g_doClear = true;
-var g_doBox = false;
-var g_undoBox = false;
-var g_doFlipFlop = false;
-var g_doRender = true;
+let g_doClear = true;
+let g_doBox = false;
+let g_undoBox = false;
+let g_doFlipFlop = false;
+let g_doRender = true;
 
-var g_frameCounter = 1;
+let g_frameCounter = 1;
 
-var TOGGLE_CLEAR = 'C'.charCodeAt(0);
-var TOGGLE_BOX = 'B'.charCodeAt(0);
-var TOGGLE_UNDO_BOX = 'U'.charCodeAt(0);
-var TOGGLE_FLIPFLOP = 'F'.charCodeAt(0);
-var TOGGLE_RENDER = 'R'.charCodeAt(0);
+const TOGGLE_CLEAR = 'C'.charCodeAt(0);
+const TOGGLE_BOX = 'B'.charCodeAt(0);
+const TOGGLE_UNDO_BOX = 'U'.charCodeAt(0);
+const TOGGLE_FLIPFLOP = 'F'.charCodeAt(0);
+// Mind this bind
+const TOGGLE_RENDER = 'R'.charCodeAt(0);
 
 function render(ctx) {
   // Process various option toggles
@@ -640,7 +640,7 @@ function render(ctx) {
   // e.g. in pathological cases, we might only see the "even" frames.
   //
   if (g_doFlipFlop) {
-    var boxX = 250,
+    let boxX = 250,
       boxY = g_isUpdateOdd ? 100 : 200;
 
     // Draw flip-flop box
@@ -649,7 +649,7 @@ function render(ctx) {
     // Display the current frame-counter in the box...
     ctx.fillText(g_frameCounter % 1000, boxX + 10, boxY + 20);
     // ..and its odd/even status too
-    var text = g_frameCounter % 2 ? 'odd' : 'even';
+    let text = g_frameCounter % 2 ? 'odd' : 'even';
     ctx.fillText(text, boxX + 10, boxY + 40);
   }
 
@@ -665,10 +665,10 @@ function render(ctx) {
 // PRELOAD STUFF
 // =============
 
-var g_shipSprite;
+let g_shipSprite;
 
 function preloadStuff_thenCall(completionCallback) {
-  var g_shipImage = new Image();
+  let g_shipImage = new Image();
 
   g_shipImage.onload = function () {
     g_shipSprite = new Sprite(g_shipImage);
@@ -690,7 +690,7 @@ function preloadStuff_thenCall(completionCallback) {
 // with genuine name-hiding *is* possible in JavaScript (via closures), but I
 // haven't adopted it here.
 //
-var g_main = {
+const g_main = {
   // "Frame Time" is a (potentially high-precision) frame-clock for animations
   _frameTime_ms: null,
   _frameTimeDelta_ms: null,
@@ -741,7 +741,7 @@ g_main.gameOver = function () {
 
 // Simple voluntary quit mechanism
 //
-var KEY_QUIT = 'Q'.charCodeAt(0);
+const KEY_QUIT = 'Q'.charCodeAt(0);
 function requestedQuit() {
   return g_keys[KEY_QUIT];
 }
@@ -763,7 +763,7 @@ g_main._requestNextIteration = function () {
 
 // Mainloop-level debug-rendering
 
-var TOGGLE_TIMER_SHOW = 'T'.charCodeAt(0);
+const TOGGLE_TIMER_SHOW = 'T'.charCodeAt(0);
 
 g_main._doTimerShow = false;
 
@@ -772,7 +772,7 @@ g_main._debugRender = function (ctx) {
 
   if (!this._doTimerShow) return;
 
-  var y = 350;
+  const y = 350;
   ctx.fillText('FT ' + this._frameTime_ms, 50, y + 10);
   ctx.fillText('FD ' + this._frameTimeDelta_ms, 50, y + 20);
   ctx.fillText('UU ' + g_prevUpdateDu, 50, y + 30);
