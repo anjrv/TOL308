@@ -144,7 +144,6 @@ Sprite.prototype.drawCentredAt = function (ctx, cx, cy, rotation = 0) {
 };
 
 Sprite.prototype.collidesLeft = function (ctx, cx) {
-  const ctxWidth = ctx.canvas.clientWidth;
   return cx - this.width / 2 < 0;
 };
 
@@ -154,7 +153,6 @@ Sprite.prototype.collidesRight = function (ctx, cx) {
 };
 
 Sprite.prototype.collidesUp = function (ctx, cy) {
-  const ctxHeight = ctx.canvas.clientHeight;
   return cy - this.height / 2 < 0;
 };
 
@@ -225,6 +223,24 @@ Ship.prototype.rotation = 0;
 Ship.prototype.velX = 0;
 Ship.prototype.velY = 0;
 
+Ship.prototype.willCollideLeft = function () {
+  return this.cx + this.velX < 0;
+};
+
+Ship.prototype.willCollideRight = function () {
+  const ctxWidth = g_ctx.canvas.clientWidth;
+  return this.cx + this.velX > ctxWidth;
+};
+
+Ship.prototype.willCollideUp = function () {
+  return this.cy + this.velY < 0;
+};
+
+Ship.prototype.willCollideDown = function () {
+  const ctxHeight = g_ctx.canvas.clientHeight;
+  return this.cy + this.velY > ctxHeight;
+};
+
 Ship.prototype.update = function (du) {
   var thrust = this.computeThrustMag();
 
@@ -248,10 +264,9 @@ var NOMINAL_GRAVITY = 0.12;
 Ship.prototype.computeGravity = function () {
   // If gravity is enabled, return the NOMINAL_GRAVITY value
   // See the "GAME-SPECIFIC DIAGNOSTICS" section for details.
+  if (g_useGravity)
+    return NOMINAL_GRAVITY;
 
-  // YOUR STUFF HERE
-  // ...
-  // I'll just return zero, as a placeholder implementation
   return 0;
 };
 
@@ -259,15 +274,17 @@ var NOMINAL_THRUST = +0.2;
 var NOMINAL_RETRO = -0.1;
 
 Ship.prototype.computeThrustMag = function () {
-  // If thrusters are on, they provide NOMINAL_THRUST
-  // If retros are on, they provide NOMINAL_RETRO (a negative force)
-  //
-  // (NB: Both may be on simultaneously, in which case they combine.)
+  let thrust = 0;
 
-  // YOUR STUFF HERE
-  // ...
-  // I'll just return zero, as a placeholder implementation
-  return 0;
+  if (g_keys[this.KEY_THRUST]) {
+    thrust += NOMINAL_THRUST;
+  }
+
+  if (g_keys[this.KEY_RETRO] ) {
+    thrust += NOMINAL_RETRO;
+  }
+
+  return thrust;
 };
 
 Ship.prototype.applyAccel = function (accelX, accelY, du) {
@@ -279,8 +296,22 @@ Ship.prototype.applyAccel = function (accelX, accelY, du) {
   //
   // The effect of the bounce should be to reverse the
   // y-component of the velocity, and then reduce it by 10%
-  // YOUR STUFF HERE
-  // ...
+  this.velX += accelX * du;
+  this.cx += this.velX * du;
+  this.velY += accelY * du;
+
+  // Somewhat messy but for this variant I also need the height of the sprite
+  const ctxHeight = g_ctx.canvas.clientHeight;
+  if (
+    g_useGravity &&
+    (((this.cy + this.velY * du) - (g_shipSprite.height / 2)) < 0 ||
+    ((this.cy + this.velY * du) + (g_shipSprite.height / 2)) > ctxHeight)
+  ) {
+    this.velY = -this.velY;
+    this.velY *= 0.9;
+  }
+
+  this.cy += this.velY * du;
 };
 
 Ship.prototype.reset = function () {
@@ -308,16 +339,30 @@ Ship.prototype.updateRotation = function (du) {
 };
 
 Ship.prototype.wrapPosition = function () {
+  const canvasHeight = g_ctx.canvas.clientHeight;
+  const canvasWidth = g_ctx.canvas.clientWidth;
+
   // Don't let the ship's centre-coordinates fall outside
   // the bounds of the playfield.
-  //
-  // YOUR STUFF HERE
-  // ...
+  if (this.willCollideDown()) {
+    this.cy -= canvasHeight;
+  }
+
+  if (this.willCollideUp()) {
+    this.cy += canvasHeight;
+  }
+
+  if (this.willCollideLeft()) {
+    this.cx += canvasWidth;
+  }
+
+  if (this.willCollideRight()) {
+    this.cx -= canvasWidth;
+  }
 };
 
 Ship.prototype.render = function (ctx) {
   // NB: The preloaded ship sprite object is called `g_shipSprite`
-  // YOUR STUFF HERE
   g_shipSprite.drawWrappedCentredAt(ctx, this.cx, this.cy, this.rotation);
 };
 
@@ -426,13 +471,29 @@ var KEY_RESET = keyCode('R');
 function processDiagnostics() {
   // Handle these simple diagnostic options,
   // as defined by the KEY identifiers above.
-  //
-  // The first three are toggles; the last two are not.
-  //
-  // NB: The HALT and RESET behaviours should apply to
-  // all three ships simulaneously.
-  // YOUR STUFF HERE
-  // ...
+  if (eatKey(KEY_EXTRAS)) {
+    g_useExtras = !g_useExtras;
+  }
+
+  if (eatKey(KEY_GRAVITY)) {
+    g_useGravity = !g_useGravity;
+  }
+
+  if (eatKey(KEY_MIXED)) {
+    g_allowMixedActions = !g_allowMixedActions;
+  }
+
+  if (g_keys[KEY_HALT]) {
+    g_ship.halt();
+    g_extraShip1.halt();
+    g_extraShip2.halt();
+  }
+
+  if (g_keys[KEY_RESET]) {
+    g_ship.reset();
+    g_extraShip1.reset();
+    g_extraShip2.reset();
+  }
 }
 
 // --------------------
