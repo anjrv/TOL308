@@ -295,9 +295,8 @@ Ship.prototype.applyAccel = function (accelX, accelY, du) {
   //
   // The effect of the bounce should be to reverse the
   // y-component of the velocity, and then reduce it by 10%
-  this.velX += accelX * du;
-  this.cx += this.velX * du;
-  this.velY += accelY * du;
+  this.velX = ((this.velX + accelX * du) + this.velX) / 2;
+  this.velY = ((this.velY + accelY * du) + this.velY) / 2;
 
   // Somewhat messy but for this variant I also need the height of the sprite
   const ctxHeight = g_ctx.canvas.clientHeight;
@@ -306,10 +305,10 @@ Ship.prototype.applyAccel = function (accelX, accelY, du) {
     (this.cy + this.velY * du - g_shipSprite.height / 2 < 0 ||
       this.cy + this.velY * du + g_shipSprite.height / 2 > ctxHeight)
   ) {
-    this.velY = -this.velY;
-    this.velY *= 0.9;
+    this.velY *= -0.9;
   }
 
+  this.cx += this.velX * du;
   this.cy += this.velY * du;
 };
 
