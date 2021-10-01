@@ -1,0 +1,24 @@
+.container {
+    position: relative;
+    margin: 0 auto;
+    width: 1280px;
+    height: 720px;
+}
+
+.front, .mid, .back {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+.front {
+    z-index: 3;
+}
+
+.mid {
+    z-index: 2;
+}
+
+.back {
+    z-index: 1;
+}

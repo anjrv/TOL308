@@ -15,8 +15,14 @@ The "MAINLOOP" code, inside g_main, is much simplified as a result.
 
 'use strict';
 
-const g_canvas = document.getElementById('myCanvas');
+const g_canvas = document.getElementById('mid');
 const g_ctx = g_canvas.getContext('2d');
+
+const g_foreground = document.getElementById('front');
+const g_background = document.getElementById('back');
+
+const g_ctx2 = g_foreground.getContext('2d');
+const g_ctx3 = g_background.getContext('2d');
 
 /*
 0        1         2         3         4         5         6         7         8         9
@@ -84,7 +90,14 @@ function renderSimulation(ctx) {
   g_character.render(ctx);
 }
 
+function drawBackground() {
+  g_ctx3.fillStyle = 'red';
+  g_ctx3.fillRect(0,0,g_ctx3.canvas.width,g_ctx3.canvas.height)
+
+}
+
 function mainInit() {
+  drawBackground();
   g_main.init();
 }
 

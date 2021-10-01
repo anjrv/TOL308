@@ -20,8 +20,9 @@ Character.prototype.attacking = false;
 Character.prototype.direction = 'L';
 Character.prototype.halfWidth = 24;
 Character.prototype.halfHeight = 24;
+// Use more charitable hit detection than the actual sprite
 Character.prototype.xHitbox = 40;
-Character.prototype.yHitbox = 40;
+Character.prototype.yHitbox = 30;
 Character.prototype.vel = 0;
 Character.prototype.maxVel = 10;
 Character.prototype.GO_LEFT = 'A'.charCodeAt(0);
