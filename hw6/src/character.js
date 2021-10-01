@@ -40,7 +40,10 @@ Character.prototype.hitsLeft = function (prevX, prevY, nextX, nextY, r) {
   const characterLeft = this.cx - this.xHitbox;
 
   if (nextY + r >= characterHead) {
-    if (nextX >= characterLeft && nextX < this.cx) {
+    if (
+      (nextX >= characterLeft && nextX < this.cx) ||
+      (characterLeft > prevX && characterLeft + this.vel < nextX)
+    ) {
       this.setAttacking();
       return true;
     }
@@ -55,7 +58,8 @@ Character.prototype.hitsRight = function (prevX, prevY, nextX, nextY, r) {
   const characterRight = this.cx + this.xHitbox;
 
   if (nextY + r >= characterHead) {
-    if (nextX <= characterRight && nextX > this.cx) {
+    if ((nextX <= characterRight && nextX > this.cx) || 
+    (characterRight < prevX && characterRight + this.vel > nextX)) {
       this.setAttacking();
       return true;
     }
