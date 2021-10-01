@@ -15,8 +15,8 @@ The "MAINLOOP" code, inside g_main, is much simplified as a result.
 
 'use strict';
 
-var g_canvas = document.getElementById('myCanvas');
-var g_ctx = g_canvas.getContext('2d');
+const g_canvas = document.getElementById('myCanvas');
+const g_ctx = g_canvas.getContext('2d');
 
 /*
 0        1         2         3         4         5         6         7         8         9
@@ -25,12 +25,12 @@ var g_ctx = g_canvas.getContext('2d');
 
 // Units
 
-var g_character = new Character({
+const g_character = new Character({
   cx: g_canvas.width / 2,
-  cy: g_canvas.height - 128,
+  cy: g_canvas.height - 120,
 });
 
-var g_ball = new Ball({
+const g_ball = new Ball({
   cx: 50,
   cy: 200,
   radius: 10,

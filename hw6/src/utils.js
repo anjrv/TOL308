@@ -13,7 +13,7 @@ function fillCircle(ctx, x, y, r) {
 }
 
 function fillBox(ctx, x, y, w, h, style) {
-    var oldStyle = ctx.fillStyle;
+    const oldStyle = ctx.fillStyle;
     ctx.fillStyle = style;
     ctx.fillRect(x, y, w, h);
     ctx.fillStyle = oldStyle;

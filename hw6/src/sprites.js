@@ -9,17 +9,14 @@ function Sprite(img) {
   this.width = img.width;
 }
 
-// Sprite.prototype.drawCentredAt = function (ctx, cx, cy, rotation = 0, scale = 1) {
-//   ctx.save();
-//   ctx.translate(cx, cy);
-//   ctx.rotate(Math.PI / 4);
-//   ctx.scale(scale, scale);
-//   ctx.translate(-this.width / 2, -this.height / 2);
-//   ctx.drawImage(this.image, 0, 0);
-//   ctx.restore();
-// };
-
-Sprite.prototype.drawCentredAt = function (ctx, x, y, scale = 1, deg = 0, flip = false) {
+Sprite.prototype.drawCentredAt = function (
+  ctx,
+  x,
+  y,
+  scale = 1,
+  deg = 0,
+  flip = false
+) {
   ctx.save();
 
   let rad = 2 * Math.PI - (deg * Math.PI) / 180;

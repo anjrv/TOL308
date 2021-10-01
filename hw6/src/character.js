@@ -1,6 +1,6 @@
 // A generic constructor which accepts an arbitrary descriptor object
 function Character(descr) {
-  for (var property in descr) {
+  for (const property in descr) {
     this[property] = descr[property];
   }
 }
@@ -20,6 +20,8 @@ Character.prototype.attacking = false;
 Character.prototype.direction = 'L';
 Character.prototype.halfWidth = 24;
 Character.prototype.halfHeight = 24;
+Character.prototype.xHitbox = 40;
+Character.prototype.yHitbox = 40;
 Character.prototype.vel = 0;
 Character.prototype.maxVel = 10;
 Character.prototype.GO_LEFT = 'A'.charCodeAt(0);
@@ -34,13 +36,12 @@ Character.prototype.setAttacking = function () {
 };
 
 Character.prototype.hitsLeft = function (prevX, prevY, nextX, nextY, r) {
-  const characterHead = this.cy - this.halfHeight * 2;
-  const characterLeft = this.cx - this.halfWidth;
+  const characterHead = this.cy - this.yHitbox * 0.5;
+  const characterLeft = this.cx - this.xHitbox;
 
-  if (nextX + r > characterLeft && prevX + r <= characterLeft) {
-    if (nextY + r >= characterHead) {
+  if (nextY + r >= characterHead) {
+    if (nextX >= characterLeft && nextX < this.cx) {
       this.setAttacking();
-      console.log('left');
       return true;
     }
   }
@@ -50,12 +51,11 @@ Character.prototype.hitsLeft = function (prevX, prevY, nextX, nextY, r) {
 };
 
 Character.prototype.hitsRight = function (prevX, prevY, nextX, nextY, r) {
-  const characterHead = this.cy - this.halfHeight * 2;
-  const characterRight = this.cx + this.halfWidth;
+  const characterHead = this.cy - this.yHitbox * 0.5;
+  const characterRight = this.cx + this.xHitbox;
 
-  if (nextX - r < characterRight && prevX - r >= characterRight) {
-    if (nextY + r >= characterHead) {
-      console.log('right');
+  if (nextY + r >= characterHead) {
+    if (nextX <= characterRight && nextX > this.cx) {
       this.setAttacking();
       return true;
     }
@@ -66,13 +66,14 @@ Character.prototype.hitsRight = function (prevX, prevY, nextX, nextY, r) {
 };
 
 Character.prototype.hitsUp = function (prevX, prevY, nextX, nextY, r) {
-  const characterHead = this.cy - this.halfHeight * 2;
-  const characterLeft = this.cx - this.halfWidth * 2;
-  const characterRight = this.cx + this.halfWidth * 2;
+  const characterHead = this.cy - this.yHitbox;
+  const characterLeft = this.cx - this.xHitbox;
+  const characterRight = this.cx + this.xHitbox;
 
-  if (nextX - r > characterLeft && nextX + r < characterRight) {
-    if (nextY + r > characterHead && prevY + r < characterHead) {
-      console.log('head');
+  // This hit detection becomes really aggressive due to the Y checks
+  // This is mainly to compensate for the slidy character movement
+  if (nextX > characterLeft && nextX < characterRight) {
+    if (nextY + r > characterHead) {
       this.setAttacking();
       return true;
     }
