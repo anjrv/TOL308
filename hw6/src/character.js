@@ -1,0 +1,205 @@
+// A generic constructor which accepts an arbitrary descriptor object
+function Character(descr) {
+  for (var property in descr) {
+    this[property] = descr[property];
+  }
+}
+
+// Add these properties to the prototype, where they will server as
+// shared defaults, in the absence of an instance-specific overrides.
+
+const IDLE = 0;
+const RUNNING = 1;
+const ATTACK_FRAMES = 6;
+
+Character.prototype.renderframe = 0;
+Character.prototype.keyframe = 0;
+Character.prototype.attackFrames = 0;
+Character.prototype.state = 0;
+Character.prototype.attacking = false;
+Character.prototype.direction = 'L';
+Character.prototype.halfWidth = 24;
+Character.prototype.halfHeight = 24;
+Character.prototype.vel = 0;
+Character.prototype.maxVel = 10;
+Character.prototype.GO_LEFT = 'A'.charCodeAt(0);
+Character.prototype.GO_RIGHT = 'D'.charCodeAt(0);
+
+const RUN_ACCEL = 0.4;
+const RUN_DECAY = 0.25;
+
+Character.prototype.setAttacking = function () {
+  this.attackFrames = 0;
+  this.attacking = true;
+};
+
+Character.prototype.hitsLeft = function (prevX, prevY, nextX, nextY, r) {
+  const characterHead = this.cy - this.halfHeight * 2;
+  const characterLeft = this.cx - this.halfWidth;
+
+  if (nextX + r > characterLeft && prevX + r <= characterLeft) {
+    if (nextY + r >= characterHead) {
+      this.setAttacking();
+      console.log('left');
+      return true;
+    }
+  }
+
+  // It's a miss!
+  return false;
+};
+
+Character.prototype.hitsRight = function (prevX, prevY, nextX, nextY, r) {
+  const characterHead = this.cy - this.halfHeight * 2;
+  const characterRight = this.cx + this.halfWidth;
+
+  if (nextX - r < characterRight && prevX - r >= characterRight) {
+    if (nextY + r >= characterHead) {
+      console.log('right');
+      this.setAttacking();
+      return true;
+    }
+  }
+
+  // It's a miss!
+  return false;
+};
+
+Character.prototype.hitsUp = function (prevX, prevY, nextX, nextY, r) {
+  const characterHead = this.cy - this.halfHeight * 2;
+  const characterLeft = this.cx - this.halfWidth * 2;
+  const characterRight = this.cx + this.halfWidth * 2;
+
+  if (nextX - r > characterLeft && nextX + r < characterRight) {
+    if (nextY + r > characterHead && prevY + r < characterHead) {
+      console.log('head');
+      this.setAttacking();
+      return true;
+    }
+  }
+
+  // It's a miss!
+  return false;
+};
+
+Character.prototype.computeChange = function () {
+  let change = 0;
+
+  // Adjust according to pushed direction ( Attack animation overrides )
+  if (g_keys[this.GO_LEFT] && this.vel > -this.maxVel) {
+    if (!this.attacking) {
+      this.state = 1;
+      this.direction = 'L';
+    }
+    if (this.vel > 0) {
+      change -= RUN_ACCEL * 2;
+    } else {
+      this.state = 1;
+      change -= RUN_ACCEL;
+    }
+  }
+
+  if (g_keys[this.GO_RIGHT] && this.vel < this.maxVel) {
+    if (!this.attacking) {
+      this.state = 1;
+      this.direction = 'R';
+    }
+    if (this.vel < 0) {
+      change += RUN_ACCEL * 2;
+    } else {
+      change += RUN_ACCEL;
+    }
+  }
+
+  // If player is not pushing a direction make character slow down
+  if (!g_keys[this.GO_RIGHT] && !g_keys[this.GO_LEFT]) {
+    if (this.vel > 0) {
+      change -= RUN_DECAY;
+    }
+
+    if (this.vel < 0) {
+      change += RUN_DECAY;
+    }
+  }
+
+  return change;
+};
+
+Character.prototype.applyChange = function (change, du) {
+  this.vel = (this.vel + change * du + this.vel) / 2;
+
+  // Why are you running
+  if (Math.abs(this.vel) < 0.1) {
+    this.vel = 0;
+
+    if (!this.attacking) this.state = IDLE;
+  }
+
+  this.cx += this.vel * du;
+};
+
+Character.prototype.update = function (du) {
+  this.renderframe = ++this.renderframe % 6;
+  if (this.renderframe === 0 && this.attackFrames++ === ATTACK_FRAMES)
+    this.attacking = false;
+
+  const dashChange = this.computeChange();
+  this.applyChange(dashChange, du);
+};
+
+Character.prototype.render = function (ctx) {
+  if (this.renderframe === 0) {
+    this.keyframe++;
+  }
+
+  let flip = true;
+  if (this.direction === 'R') {
+    flip = false;
+  }
+
+  const canvasWidth = g_canvas.clientWidth;
+
+  // The center of the sprite is somewhat unintuitively positioned so we adjust
+  if (this.cx + this.halfWidth * 2 - this.vel < 0) {
+    this.cx += canvasWidth;
+  } else if (this.cx + this.halfWidth + this.vel > canvasWidth) {
+    this.cx -= canvasWidth;
+  }
+
+  // For all states render 3 copies for wrapping purposes (offset by the canvas width)
+  let i = 0;
+  if (this.attacking) {
+    for (i = -i; i < 2; i++) {
+      this.sprites.attack[this.attackFrames].drawCentredAt(
+        ctx,
+        this.cx + canvasWidth * i,
+        this.cy,
+        3,
+        0,
+        flip
+      );
+    }
+  } else if (this.state === IDLE) {
+    for (i = -1; i < 2; i++) {
+      this.sprites.idle[this.keyframe % this.sprites.idle.length].drawCentredAt(
+        ctx,
+        this.cx + canvasWidth * i,
+        this.cy,
+        3,
+        0,
+        flip
+      );
+    }
+  } else if (this.state === RUNNING) {
+    for (i = -i; i < 2; i++) {
+      this.sprites.run[this.keyframe % this.sprites.run.length].drawCentredAt(
+        ctx,
+        this.cx + canvasWidth * i,
+        this.cy,
+        3,
+        0,
+        flip
+      );
+    }
+  }
+};
