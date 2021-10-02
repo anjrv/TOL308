@@ -18,11 +18,13 @@ The "MAINLOOP" code, inside g_main, is much simplified as a result.
 const g_canvas = document.getElementById('mid');
 const g_ctx = g_canvas.getContext('2d');
 
-const g_foreground = document.getElementById('front');
-const g_background = document.getElementById('back');
+const g_f = document.getElementById('front');
+const g_bg1 = document.getElementById('back1');
+const g_bg2 = document.getElementById('back2');
 
-const g_ctx2 = g_foreground.getContext('2d');
-const g_ctx3 = g_background.getContext('2d');
+const g_foreground = g_f.getContext('2d');
+const g_background1 = g_bg1.getContext('2d');
+const g_background2 = g_bg2.getContext('2d');
 
 /*
 0        1         2         3         4         5         6         7         8         9
@@ -31,17 +33,20 @@ const g_ctx3 = g_background.getContext('2d');
 
 // Units
 
-
-
 const g_character = new Character({
   cx: g_canvas.width / 2,
-  cy: g_canvas.height - 120,
+  cy: g_canvas.height - 96,
+});
+
+const g_wall = new Wall({
+  tileWidth: 64,
+  tileHeight: 32,
 });
 
 const g_balls = [];
 const g_ball = new Ball({
-  cx: 50,
-  cy: 200,
+  cx: g_canvas.width * 0.3,
+  cy: g_canvas.height * 0.6,
   radius: 8,
 
   xVel: 5,
@@ -77,6 +82,8 @@ function gatherInputs() {
 function updateSimulation(du) {
   renderFrame = ++renderFrame % 6;
 
+  g_wall.update(du);
+
   for (let i = 0; i < g_balls.length; i++) {
     g_balls[i].update(du);
   }
@@ -98,6 +105,8 @@ function updateSimulation(du) {
 // GAME-SPECIFIC RENDERING
 
 function renderSimulation(ctx) {
+  g_wall.render(ctx, renderFrame);
+
   for (let i = 0; i < g_balls.length; i++) {
     g_balls[i].render(ctx, renderFrame);
   }
@@ -105,14 +114,76 @@ function renderSimulation(ctx) {
   g_character.render(ctx, renderFrame);
 }
 
-function drawBackground() {
-  g_ctx3.fillStyle = 'gray';
-  g_ctx3.fillRect(0,0,g_ctx3.canvas.width,g_ctx3.canvas.height)
+const world = [];
 
+// Far away background assets
+function drawBackground2() {
+  const viewWidth = g_canvas.width;
+  const viewHeight = g_canvas.height;
+
+  // Background landscape
+  world[4].drawCentredAt(
+    g_background2,
+    viewWidth / 2,
+    viewHeight / 2,
+    3,
+    0,
+    false
+  );
+  world[5].drawCentredAt(
+    g_background2,
+    viewWidth / 2,
+    viewHeight / 1.5,
+    3,
+    0,
+    false
+  );
+
+  // Pillar thingies
+  // Left
+  world[2].drawCentredAt(
+    g_background2,
+    viewWidth * 0.14,
+    viewHeight / 2.1,
+    3,
+    0,
+    false
+  );
+  world[0].drawCentredAt(g_background2, 0, viewHeight / 2.2, 3, 0, false);
+  // Right
+  world[2].drawCentredAt(
+    g_background2,
+    viewWidth * 0.86,
+    viewHeight / 2.3,
+    3,
+    0,
+    false
+  );
+  world[3].drawCentredAt(
+    g_background2,
+    viewWidth * 0.96,
+    viewHeight / 2.2,
+    3,
+    0,
+    false
+  );
+
+  // Rock thingies
+}
+
+// "Mid ground" static assets
+function drawBackground1() {
+  const viewWidth = g_canvas.width;
+  const viewHeight = g_canvas.height;
+}
+
+function drawBackgrounds() {
+  drawBackground2();
+  drawBackground1();
 }
 
 function mainInit() {
-  drawBackground();
+  drawBackgrounds();
   g_main.init();
 }
 
@@ -147,6 +218,12 @@ function preloadStuff_thenCall(completionCallback) {
     './assets/ball/hit_effect03.png',
     './assets/ball/hit_effect04.png',
     './assets/ball/hit_effect05.png',
+    './assets/world/background_obj01.png',
+    './assets/world/background_obj02.png',
+    './assets/world/background_obj03.png',
+    './assets/world/background_obj04.png',
+    './assets/world/background02.png',
+    './assets/world/background03.png'
   ];
 
   const attack = [];
@@ -157,25 +234,41 @@ function preloadStuff_thenCall(completionCallback) {
   for (let i = 0; i < 7; i++) {
     const img = new Image();
     img.src = preload[i];
-    setTimeout(function() { attack[i] = new Sprite(img); }, 100);
+    setTimeout(function () {
+      attack[i] = new Sprite(img);
+    }, 100);
   }
 
   for (let i = 0; i < 9; i++) {
     const img = new Image();
-    img.src = preload[i+7];
-    setTimeout(function() { idle[i] = new Sprite(img); }, 100);
+    img.src = preload[i + 7];
+    setTimeout(function () {
+      idle[i] = new Sprite(img);
+    }, 100);
   }
 
   for (let i = 0; i < 8; i++) {
     const img = new Image();
-    img.src = preload[i+16];
-    setTimeout(function() { run[i] = new Sprite(img); }, 100);
+    img.src = preload[i + 16];
+    setTimeout(function () {
+      run[i] = new Sprite(img);
+    }, 100);
   }
 
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 5; i++) {
     const img = new Image();
-    img.src = preload[i+24];
-    setTimeout(function() { hit[i] = new Sprite(img); }, 100);
+    img.src = preload[i + 24];
+    setTimeout(function () {
+      hit[i] = new Sprite(img);
+    }, 100);
+  }
+
+  for (let i = 0; i < 6; i++) {
+    const img = new Image();
+    img.src = preload[i + 29];
+    setTimeout(function () {
+      world[i] = new Sprite(img);
+    }, 100);
   }
 
   const sprites = {};
@@ -186,7 +279,11 @@ function preloadStuff_thenCall(completionCallback) {
 
   g_ball.sprites = hit;
 
-  setTimeout(function() { completionCallback() }, 100);
+  setTimeout(function () { g_wall.sprite = world[0]; }, 100);
+
+  setTimeout(function () {
+    completionCallback();
+  }, 100);
 }
 
 preloadStuff_thenCall(mainInit);

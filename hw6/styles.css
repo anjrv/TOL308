@@ -2,22 +2,28 @@
     position: relative;
     width: 1280px;
     height: 720px;
+    background-image: url("./assets/world/background01.png");
+    background-size: cover;
 }
 
-.front, .mid, .back {
+.front, .mid, .back1, .back2 {
     position: absolute;
     top: 0px;
     left: 0px;
 }
 
 .front {
-    z-index: 3;
+    z-index: 4;
 }
 
 .mid {
+    z-index: 3;
+}
+
+.back1 {
     z-index: 2;
 }
 
-.back {
+.back2 {
     z-index: 1;
 }

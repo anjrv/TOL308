@@ -27,6 +27,11 @@ Ball.prototype.update = function (du) {
 
   let gotHit = false;
 
+  if (g_wall.collidesWith(prevX, prevY, nextX, nextY, this.radius)) {
+    gotHit = true;
+    this.yVel *= -1;
+  }
+
   if (this.yVel > 0) {
     if (g_character.hitsLeft(prevX, prevY, nextX, nextY, this.radius)) {
       this.yVel *= -0.95;
@@ -46,7 +51,7 @@ Ball.prototype.update = function (du) {
       }
     } else if (g_character.hitsUp(prevX, prevY, nextX, nextY, this.radius)) {
       gotHit = true;
-      this.yVel *= -1.2;
+      this.yVel *= -1.05;
     }
   }
 
@@ -78,23 +83,7 @@ Ball.prototype.update = function (du) {
 
   // Push a hit location
   if (gotHit) {
-    // Aggressively shift splash back into the canvas
-    // If location was outside of it
-    let locX = prevX;
-    if (prevX + this.radius >= g_canvas.width) {
-      locX = prevX - this.radius * 4;
-    } else if (prevX < 0) {
-      locX = prevX + this.radius * 4;
-    }
-
-    let locY = prevY;
-    if (prevY + this.radius >= g_canvas.height) {
-      locY = prevY - this.radius * 4;
-    } else if (prevY < 0) {
-      locY = prevY + this.radius * 4;
-    }
-
-    this.gotHit(locX, locY);
+    this.gotHit(prevX, prevY);
   }
 };
 
@@ -114,14 +103,14 @@ Ball.prototype.render = function (ctx, renderFrame) {
   const gradient = ctx.createRadialGradient(
     this.cx,
     this.cy,
-    this.radius - this.radius / 1.5,
+    this.radius - this.radius / 1.2,
     this.cx,
     this.cy,
     this.radius
   );
 
-  gradient.addColorStop(0, '#b8e6fc');
-  gradient.addColorStop(1, '#de69b7');
+  gradient.addColorStop(0, '#368ecc');
+  gradient.addColorStop(1, '#223582');
 
   ctx.fillStyle = gradient;
   fillCircle(ctx, this.cx, this.cy, this.radius);
