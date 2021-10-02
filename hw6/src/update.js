@@ -5,6 +5,8 @@
 //
 const NOMINAL_UPDATE_INTERVAL = 16.666;
 
+let g_isFirstUpdate = true;
+
 // Dt means "delta time" and is in units of the timer-system (i.e. milliseconds)
 //
 let g_prevUpdateDt = null;
@@ -21,6 +23,14 @@ function update(dt) {
   // Get out if skipping (e.g. due to pause-mode)
   //
   if (shouldSkipUpdate()) return;
+
+  if (g_isFirstUpdate) {
+    g_isFirstUpdate = false;
+    clearCanvas(g_foreground);
+  }
+
+  if (g_sounds && !g_character.isDead) music.play();
+  if (shouldShutUp() || g_character.isDead) music.pause();
 
   // Remember this for later
   //
@@ -42,7 +52,6 @@ function update(dt) {
 
   g_prevUpdateDt = original_dt;
   g_prevUpdateDu = du;
-
   g_isUpdateOdd = !g_isUpdateOdd;
 }
 
@@ -50,11 +59,21 @@ function update(dt) {
 //
 const KEY_PAUSE = 'P'.charCodeAt(0);
 const KEY_STEP = 'O'.charCodeAt(0);
-let g_isUpdatePaused = false;
+const KEY_SOUND = 'S'.charCodeAt(0);
+let g_isUpdatePaused = true;
 
 function shouldSkipUpdate() {
   if (eatKey(KEY_PAUSE)) {
+    music.pause();
     g_isUpdatePaused = !g_isUpdatePaused;
   }
   return g_isUpdatePaused && !eatKey(KEY_STEP);
+}
+
+function shouldShutUp() {
+  if (eatKey(KEY_SOUND)) {
+    g_sounds = !g_sounds;
+  }
+
+  return !g_sounds;
 }

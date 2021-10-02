@@ -19,12 +19,12 @@ const g_canvas = document.getElementById('mid');
 const g_ctx = g_canvas.getContext('2d');
 
 const g_f = document.getElementById('front');
-const g_bg1 = document.getElementById('back1');
-const g_bg2 = document.getElementById('back2');
+const g_bg = document.getElementById('back');
 
 const g_foreground = g_f.getContext('2d');
-const g_background1 = g_bg1.getContext('2d');
-const g_background2 = g_bg2.getContext('2d');
+const g_background = g_bg.getContext('2d');
+
+let g_sounds = true;
 
 /*
 0        1         2         3         4         5         6         7         8         9
@@ -45,6 +45,7 @@ const g_character = new Character({
 const g_wall = new Wall({
   tileWidth: 64,
   tileHeight: 32,
+  blockFrequency: 0.5,
 });
 
 const g_balls = [];
@@ -59,7 +60,7 @@ const g_ball = new Ball({
 
 g_balls.push(g_ball);
 
-let renderFrame = 0;
+let renderFrame = 1;
 
 // =============
 // GATHER INPUTS
@@ -121,14 +122,13 @@ function renderSimulation(ctx) {
 
 const world = [];
 
-// Far away background assets
-function drawBackground2() {
+function drawBackgrounds() {
   const viewWidth = g_canvas.width;
   const viewHeight = g_canvas.height;
 
   // Background landscape
   world[4].drawCentredAt(
-    g_background2,
+    g_background,
     viewWidth / 2,
     viewHeight / 2,
     3,
@@ -136,7 +136,7 @@ function drawBackground2() {
     false
   );
   world[5].drawCentredAt(
-    g_background2,
+    g_background,
     viewWidth / 2,
     viewHeight / 1.5,
     3,
@@ -147,7 +147,7 @@ function drawBackground2() {
   // Pillar thingies
   // Left
   world[2].drawCentredAt(
-    g_background2,
+    g_background,
     viewWidth * 0,
     viewHeight / 2.1,
     3,
@@ -155,7 +155,7 @@ function drawBackground2() {
     false
   );
   world[0].drawCentredAt(
-    g_background2,
+    g_background,
     -viewWidth * 0.1,
     viewHeight / 2.2,
     3,
@@ -164,7 +164,7 @@ function drawBackground2() {
   );
   // Right
   world[2].drawCentredAt(
-    g_background2,
+    g_background,
     viewWidth * 0.86,
     viewHeight / 2.3,
     3,
@@ -172,7 +172,7 @@ function drawBackground2() {
     false
   );
   world[3].drawCentredAt(
-    g_background2,
+    g_background,
     viewWidth * 0.96,
     viewHeight / 2.2,
     3,
@@ -181,21 +181,36 @@ function drawBackground2() {
   );
 }
 
-// "Mid ground" static assets
-function drawBackground1() {
-  const viewWidth = g_canvas.width;
-  const viewHeight = g_canvas.height;
-}
+function drawWelcome() {
+  g_foreground.font = 'Bold 30pt Courier';
+  g_foreground.fillStyle = '#2d2837';
+  g_foreground.strokeStyle = '#f5c0ad';
+  g_foreground.textAlign = 'center';
+  g_foreground.textBaseline = 'middle';
 
-function drawBackgrounds() {
-  drawBackground2();
-  drawBackground1();
+  // Title
+  g_foreground.fillText('\"Little Red breaks through the glass ceiling\"', g_canvas.width / 2, g_canvas.height / 3);
+  g_foreground.strokeText('Little Red breaks through the glass ceiling', g_canvas.width / 2, g_canvas.height / 3);
+
+
+  // Sound
+  g_foreground.fillText('\'S\' to make it shut up...', g_canvas.width / 2, g_canvas.height / 2.4);
+  g_foreground.strokeText('\'S\' to make it shut up...', g_canvas.width / 2, g_canvas.height / 2.4);
+
+  // Unpause
+  g_foreground.fillText('\'P\' to unpause!', g_canvas.width / 2, g_canvas.height / 2);
+  g_foreground.strokeText('\'P\' to unpause!', g_canvas.width / 2, g_canvas.height / 2);
 }
 
 function mainInit() {
   drawBackgrounds();
+  drawWelcome();
   g_main.init();
 }
+
+let oofSound = null;
+let music = null;
+let glassSounds = [];
 
 function preloadStuff_thenCall(completionCallback) {
   const preload = [
@@ -318,6 +333,13 @@ function preloadStuff_thenCall(completionCallback) {
   g_character.sprites = sprites;
   g_ball.sprites = hit;
   g_hearts.sprites = hearts;
+
+  music = new Audio('./assets/sounds/music.mp3');
+  oofSound = new Audio('./assets/sounds/oof.wav');
+  glassSounds.push(new Audio('./assets/sounds/glass1.wav'));
+  glassSounds.push(new Audio('./assets/sounds/glass2.wav'));
+
+  music.loop = true;
 
   setTimeout(function () {
     completionCallback();

@@ -1,29 +1,31 @@
 .container {
-    position: relative;
-    width: 1280px;
-    height: 720px;
-    background-image: url("./assets/world/background01.png");
-    background-size: cover;
+  position: relative;
+  width: 1280px;
+  height: 720px;
+  background-image: url('./assets/world/background01.png');
+  background-size: cover;
 }
 
-.front, .mid, .back1, .back2 {
-    position: absolute;
-    top: 0px;
-    left: 0px;
+.front,
+.mid,
+.back {
+  position: absolute;
+  top: 0px;
+  left: 0px;
 }
 
 .front {
-    z-index: 4;
+  z-index: 4;
 }
 
 .mid {
-    z-index: 3;
+  z-index: 3;
 }
 
 .back1 {
-    z-index: 2;
+  z-index: 2;
 }
 
 .back2 {
-    z-index: 1;
+  z-index: 1;
 }

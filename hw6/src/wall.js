@@ -18,7 +18,7 @@ Wall.prototype.initializeTiles = function () {
   for (let i = this.topEdge; i <= this.bottomEdge; i++) {
     const row = [];
     for (let j = 0; j < xTiles; j++) {
-      if (Math.random() < 0.8) {
+      if (Math.random() < this.blockFrequency) {
         if (Math.random() < 0.1) {
           row.push('S');
         } else {
@@ -51,10 +51,11 @@ Wall.prototype.collidesWith = function (prevX, prevY, nextX, nextY, r) {
 
     if (this.tiles[row][column] === 'T' || this.tiles[row][column] === 'S') {
       if (this.tiles[row][column] === 'S') {
-        g_hearts.hearts.push({cx: prevX, cy: prevY});
+        g_hearts.hearts.push({ cx: prevX, cy: prevY });
       }
-    
+
       this.tiles[row][column] = 'F';
+      if (g_sounds) glassSounds[randomIntFromInterval(0, 1)].play();
       return true;
     }
 

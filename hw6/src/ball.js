@@ -57,8 +57,7 @@ Ball.prototype.update = function (du) {
 
   // Bounce off edges
   if (nextY < 0 || nextY > g_canvas.height) {
-    if (nextY > g_canvas.height)
-      g_character.health--;
+    if (nextY > g_canvas.height) g_character.health--;
 
     gotHit = true;
     this.yVel *= -1;

@@ -183,11 +183,13 @@ Character.prototype.applyChange = function (change, du) {
 };
 
 Character.prototype.update = function (du) {
-  if (this.health < 1) {
+  if (this.health < 1 && !this.isDead) {
+    if (g_sounds) oofSound.play();
     this.isDead = true;
   }
 
   if (this.isDead) {
+    music.pause();
     return;
   }
 
