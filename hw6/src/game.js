@@ -44,7 +44,7 @@ const g_character = new Character({
 
 const g_wall = new Wall({
   tileWidth: 64,
-  tileHeight: 32,
+  tileHeight: 64,
   blockFrequency: 0.5,
 });
 

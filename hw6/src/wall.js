@@ -34,30 +34,46 @@ Wall.prototype.initializeTiles = function () {
   this.tiles = tiles;
 };
 
-Wall.prototype.collidesWith = function (prevX, prevY, nextX, nextY, r) {
-  // Inside the wall Y-axis
-  if (
-    nextY < this.bottomEdge * this.tileHeight &&
-    nextY > this.topEdge * this.tileHeight
-  ) {
-    let row;
-    if (nextY < prevY) {
-      row = Math.ceil((nextY - r) / this.tileHeight);
-    } else {
-      row = Math.floor((nextY + r) / this.tileHeight);
-    }
-
-    const column = Math.floor(nextX / this.tileWidth);
-
-    if (this.tiles[row][column] === 'T' || this.tiles[row][column] === 'S') {
-      if (this.tiles[row][column] === 'S') {
+Wall.prototype.checkHit = function (row, col, prevX, prevY) {
+  if (this.tiles[row] && this.tiles[row][col]) {
+    if (this.tiles[row][col] === 'T' || this.tiles[row][col] === 'S') {
+      if (this.tiles[row][col] === 'S') {
         g_hearts.hearts.push({ cx: prevX, cy: prevY });
       }
 
-      this.tiles[row][column] = 'F';
+      this.tiles[row][col] = 'F';
+
       if (g_sounds) glassSounds[randomIntFromInterval(0, 1)].play();
+
       return true;
     }
+  }
+
+  return false;
+};
+
+Wall.prototype.collidesWith = function (prevX, prevY, nextX, nextY, r) {
+  // Inside the wall Y-axis
+  if (
+    nextY + r < this.bottomEdge * this.tileHeight + this.tileHeight &&
+    nextY - r > this.topEdge * this.tileHeight
+  ) {
+    let rows = [];
+    let columns = [];
+
+    if (nextY < prevY) {
+      rows.push(Math.ceil((nextY - r) / this.tileHeight));
+    } else {
+      rows.push(Math.floor((nextY + r) / this.tileHeight));
+    }
+
+    if (nextX < prevX) {
+      columns.push(Math.ceil((nextX - r) / this.tileWidth));
+    } else {
+      columns.push(Math.floor((nextX + r) / this.tileWidth));
+    }
+
+    if (this.checkHit(rows[0], columns[0])) return true;
 
     return false;
   }
