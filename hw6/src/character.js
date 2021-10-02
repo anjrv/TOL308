@@ -12,7 +12,6 @@ const IDLE = 0;
 const RUNNING = 1;
 const ATTACK_FRAMES = 6;
 
-Character.prototype.renderframe = 0;
 Character.prototype.keyframe = 0;
 Character.prototype.attackFrames = 0;
 Character.prototype.state = 0;
@@ -145,16 +144,15 @@ Character.prototype.applyChange = function (change, du) {
 };
 
 Character.prototype.update = function (du) {
-  this.renderframe = ++this.renderframe % 6;
-  if (this.renderframe === 0 && this.attackFrames++ === ATTACK_FRAMES)
-    this.attacking = false;
-
   const dashChange = this.computeChange();
   this.applyChange(dashChange, du);
 };
 
-Character.prototype.render = function (ctx) {
-  if (this.renderframe === 0) {
+Character.prototype.render = function (ctx, renderFrame) {
+  if (renderFrame === 0 && this.attackFrames++ === ATTACK_FRAMES)
+    this.attacking = false;
+
+  if (renderFrame === 0) {
     this.keyframe++;
   }
 

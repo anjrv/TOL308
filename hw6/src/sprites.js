@@ -28,10 +28,10 @@ Sprite.prototype.drawCentredAt = function (
   ctx.translate(x + this.width / 2, y + this.height / 2);
   ctx.rotate(rad);
 
-  ctx.scale(scale, scale);
   if (flip) {
     ctx.scale(-1, 1);
   }
+  ctx.scale(scale, scale);
 
   ctx.drawImage(
     this.image,

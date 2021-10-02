@@ -31,19 +31,26 @@ const g_ctx3 = g_background.getContext('2d');
 
 // Units
 
+
+
 const g_character = new Character({
   cx: g_canvas.width / 2,
   cy: g_canvas.height - 120,
 });
 
+const g_balls = [];
 const g_ball = new Ball({
   cx: 50,
   cy: 200,
-  radius: 10,
+  radius: 8,
 
   xVel: 5,
   yVel: 4,
 });
+
+g_balls.push(g_ball);
+
+let renderFrame = 0;
 
 // =============
 // GATHER INPUTS
@@ -68,7 +75,12 @@ function gatherInputs() {
 // GAME-SPECIFIC UPDATE LOGIC
 
 function updateSimulation(du) {
-  g_ball.update(du);
+  renderFrame = ++renderFrame % 6;
+
+  for (let i = 0; i < g_balls.length; i++) {
+    g_balls[i].update(du);
+  }
+
   g_character.update(du);
 }
 
@@ -86,12 +98,15 @@ function updateSimulation(du) {
 // GAME-SPECIFIC RENDERING
 
 function renderSimulation(ctx) {
-  g_ball.render(ctx);
-  g_character.render(ctx);
+  for (let i = 0; i < g_balls.length; i++) {
+    g_balls[i].render(ctx, renderFrame);
+  }
+
+  g_character.render(ctx, renderFrame);
 }
 
 function drawBackground() {
-  g_ctx3.fillStyle = 'red';
+  g_ctx3.fillStyle = 'gray';
   g_ctx3.fillRect(0,0,g_ctx3.canvas.width,g_ctx3.canvas.height)
 
 }
@@ -127,11 +142,17 @@ function preloadStuff_thenCall(completionCallback) {
     './assets/character/run/run06.png',
     './assets/character/run/run07.png',
     './assets/character/run/run08.png',
+    './assets/ball/hit_effect01.png',
+    './assets/ball/hit_effect02.png',
+    './assets/ball/hit_effect03.png',
+    './assets/ball/hit_effect04.png',
+    './assets/ball/hit_effect05.png',
   ];
 
   const attack = [];
   const idle = [];
   const run = [];
+  const hit = [];
 
   for (let i = 0; i < 7; i++) {
     const img = new Image();
@@ -151,11 +172,19 @@ function preloadStuff_thenCall(completionCallback) {
     setTimeout(function() { run[i] = new Sprite(img); }, 100);
   }
 
+  for (let i = 0; i < 4; i++) {
+    const img = new Image();
+    img.src = preload[i+24];
+    setTimeout(function() { hit[i] = new Sprite(img); }, 100);
+  }
+
   const sprites = {};
   sprites.attack = attack;
   sprites.idle = idle;
   sprites.run = run;
   g_character.sprites = sprites;
+
+  g_ball.sprites = hit;
 
   setTimeout(function() { completionCallback() }, 100);
 }
