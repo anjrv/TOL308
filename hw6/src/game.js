@@ -143,13 +143,13 @@ function drawBackground2() {
   // Left
   world[2].drawCentredAt(
     g_background2,
-    viewWidth * 0.14,
+    viewWidth * 0,
     viewHeight / 2.1,
     3,
     0,
     false
   );
-  world[0].drawCentredAt(g_background2, 0, viewHeight / 2.2, 3, 0, false);
+  world[0].drawCentredAt(g_background2, -viewWidth * 0.1, viewHeight / 2.2, 3, 0, false);
   // Right
   world[2].drawCentredAt(
     g_background2,

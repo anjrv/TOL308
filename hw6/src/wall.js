@@ -19,9 +19,13 @@ Wall.prototype.initializeTiles = function () {
     const row = [];
     for (let j = 0; j < xTiles; j++) {
       if (Math.random() < 0.8) {
-        row.push('T');
+        if (Math.random() < 0.1) {
+          row.push('S');
+        } else {
+          row.push('T');
+        }
       } else {
-        row.push('F');  
+        row.push('F');
       }
     }
     tiles[i] = row;
@@ -32,8 +36,10 @@ Wall.prototype.initializeTiles = function () {
 
 Wall.prototype.collidesWith = function (prevX, prevY, nextX, nextY, r) {
   // Inside the wall Y-axis
-  if (nextY < this.bottomEdge * this.tileHeight && nextY > this.topEdge * this.tileHeight) {
-
+  if (
+    nextY < this.bottomEdge * this.tileHeight &&
+    nextY > this.topEdge * this.tileHeight
+  ) {
     let row;
     if (nextY < prevY) {
       row = Math.ceil((nextY - r) / this.tileHeight);
@@ -43,7 +49,7 @@ Wall.prototype.collidesWith = function (prevX, prevY, nextX, nextY, r) {
 
     const column = Math.floor(nextX / this.tileWidth);
 
-    if (this.tiles[row][column] === 'T') {
+    if (this.tiles[row][column] === 'T' || this.tiles[row][column] === 'S') {
       this.tiles[row][column] = 'F';
       return true;
     }
@@ -56,19 +62,53 @@ Wall.prototype.update = function (du) {
   if (!this.tiles) {
     this.initializeTiles();
   }
-
 };
 
 Wall.prototype.render = function (ctx, renderFrame) {
   ctx.save();
+
+  const regularGradient = ctx.createLinearGradient(
+    0,
+    0,
+    this.tileWidth,
+    this.tileHeight
+  );
+  regularGradient.addColorStop(0, '#302b3c');
+  regularGradient.addColorStop(1, 'rgba(45, 40, 55, 0.8');
+
+  const specialGradient = ctx.createLinearGradient(
+    0,
+    0,
+    this.tileWidth,
+    this.tileHeight
+  );
+  specialGradient.addColorStop(0, '#302b3c');
+  specialGradient.addColorStop(1, 'rgba(216, 59, 46, 0.8');
+
   for (let i = this.topEdge; i <= this.bottomEdge; i++) {
     for (let j = 0; j < this.tiles[this.topEdge].length; j++) {
       if (this.tiles[i][j] === 'T') {
-        const tileGradient = ctx.createLinearGradient(0, 0, this.tileWidth, this.tileHeight);
-        tileGradient.addColorStop(0, '#302b3c');
-        tileGradient.addColorStop(1, 'rgba(45, 40, 55, 0.8');
-
-        roundedRect(ctx, j * this.tileWidth, i * this.tileHeight, this.tileWidth, this.tileHeight, 8, tileGradient, '#b482ae');
+        roundedRect(
+          ctx,
+          j * this.tileWidth,
+          i * this.tileHeight,
+          this.tileWidth,
+          this.tileHeight,
+          8,
+          regularGradient,
+          '#b482ae'
+        );
+      } else if (this.tiles[i][j] === 'S') {
+        roundedRect(
+          ctx,
+          j * this.tileWidth,
+          i * this.tileHeight,
+          this.tileWidth,
+          this.tileHeight,
+          8,
+          specialGradient,
+          '#b482ae'
+        );
       }
     }
   }
