@@ -50,6 +50,10 @@ Wall.prototype.collidesWith = function (prevX, prevY, nextX, nextY, r) {
     const column = Math.floor(nextX / this.tileWidth);
 
     if (this.tiles[row][column] === 'T' || this.tiles[row][column] === 'S') {
+      if (this.tiles[row][column] === 'S') {
+        g_hearts.hearts.push({cx: prevX, cy: prevY});
+      }
+    
       this.tiles[row][column] = 'F';
       return true;
     }

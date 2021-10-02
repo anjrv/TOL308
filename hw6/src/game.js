@@ -33,9 +33,13 @@ const g_background2 = g_bg2.getContext('2d');
 
 // Units
 
+const g_hearts = new Hearts({
+  hearts: [],
+});
+
 const g_character = new Character({
   cx: g_canvas.width / 2,
-  cy: g_canvas.height - 96,
+  cy: g_canvas.height - 88,
 });
 
 const g_wall = new Wall({
@@ -82,13 +86,14 @@ function gatherInputs() {
 function updateSimulation(du) {
   renderFrame = ++renderFrame % 6;
 
-  g_wall.update(du);
+  g_hearts.update(du);
+  g_character.update(du);
 
   for (let i = 0; i < g_balls.length; i++) {
     g_balls[i].update(du);
   }
 
-  g_character.update(du);
+  g_wall.update(du);
 }
 
 // =================
@@ -105,13 +110,13 @@ function updateSimulation(du) {
 // GAME-SPECIFIC RENDERING
 
 function renderSimulation(ctx) {
+  g_hearts.render(ctx, renderFrame);
+  g_character.render(ctx, renderFrame);
   g_wall.render(ctx, renderFrame);
 
   for (let i = 0; i < g_balls.length; i++) {
     g_balls[i].render(ctx, renderFrame);
   }
-
-  g_character.render(ctx, renderFrame);
 }
 
 const world = [];
@@ -149,7 +154,14 @@ function drawBackground2() {
     0,
     false
   );
-  world[0].drawCentredAt(g_background2, -viewWidth * 0.1, viewHeight / 2.2, 3, 0, false);
+  world[0].drawCentredAt(
+    g_background2,
+    -viewWidth * 0.1,
+    viewHeight / 2.2,
+    3,
+    0,
+    false
+  );
   // Right
   world[2].drawCentredAt(
     g_background2,
@@ -167,8 +179,6 @@ function drawBackground2() {
     0,
     false
   );
-
-  // Rock thingies
 }
 
 // "Mid ground" static assets
@@ -213,6 +223,11 @@ function preloadStuff_thenCall(completionCallback) {
     './assets/character/run/run06.png',
     './assets/character/run/run07.png',
     './assets/character/run/run08.png',
+    './assets/character/death/death01.png',
+    './assets/character/death/death02.png',
+    './assets/character/death/death03.png',
+    './assets/character/death/death04.png',
+    './assets/character/death/death05.png',
     './assets/ball/hit_effect01.png',
     './assets/ball/hit_effect02.png',
     './assets/ball/hit_effect03.png',
@@ -223,13 +238,21 @@ function preloadStuff_thenCall(completionCallback) {
     './assets/world/background_obj03.png',
     './assets/world/background_obj04.png',
     './assets/world/background02.png',
-    './assets/world/background03.png'
+    './assets/world/background03.png',
+    './assets/heart/heart01.png',
+    './assets/heart/heart02.png',
+    './assets/heart/heart03.png',
+    './assets/heart/heart04.png',
+    './assets/heart/heart05.png',
+    './assets/heart/heart06.png',
   ];
 
   const attack = [];
   const idle = [];
   const run = [];
   const hit = [];
+  const death = [];
+  const hearts = [];
 
   for (let i = 0; i < 7; i++) {
     const img = new Image();
@@ -259,15 +282,31 @@ function preloadStuff_thenCall(completionCallback) {
     const img = new Image();
     img.src = preload[i + 24];
     setTimeout(function () {
+      death[i] = new Sprite(img);
+    }, 100);
+  }
+
+  for (let i = 0; i < 5; i++) {
+    const img = new Image();
+    img.src = preload[i + 29];
+    setTimeout(function () {
       hit[i] = new Sprite(img);
     }, 100);
   }
 
   for (let i = 0; i < 6; i++) {
     const img = new Image();
-    img.src = preload[i + 29];
+    img.src = preload[i + 34];
     setTimeout(function () {
       world[i] = new Sprite(img);
+    }, 100);
+  }
+
+  for (let i = 0; i < 6; i++) {
+    const img = new Image();
+    img.src = preload[i + 40];
+    setTimeout(function () {
+      hearts[i] = new Sprite(img);
     }, 100);
   }
 
@@ -275,11 +314,10 @@ function preloadStuff_thenCall(completionCallback) {
   sprites.attack = attack;
   sprites.idle = idle;
   sprites.run = run;
+  sprites.death = death;
   g_character.sprites = sprites;
-
   g_ball.sprites = hit;
-
-  setTimeout(function () { g_wall.sprite = world[0]; }, 100);
+  g_hearts.sprites = hearts;
 
   setTimeout(function () {
     completionCallback();

@@ -13,9 +13,13 @@ const RUNNING = 1;
 const ATTACK_FRAMES = 6;
 
 Character.prototype.keyframe = 0;
+Character.prototype.deathFrames = 0;
 Character.prototype.attackFrames = 0;
 Character.prototype.state = 0;
+Character.prototype.health = 3;
+Character.prototype.maxHealth = 3;
 Character.prototype.attacking = false;
+Character.prototype.isDead = false;
 Character.prototype.direction = 'L';
 Character.prototype.halfWidth = 24;
 Character.prototype.halfHeight = 24;
@@ -36,6 +40,10 @@ Character.prototype.setAttacking = function () {
 };
 
 Character.prototype.hitsLeft = function (prevX, prevY, nextX, nextY, r) {
+  if (this.isDead) {
+    return false;
+  }
+
   const characterHead = this.cy - this.yHitbox * 0.5;
   const characterLeft = this.cx - this.xHitbox;
 
@@ -54,12 +62,18 @@ Character.prototype.hitsLeft = function (prevX, prevY, nextX, nextY, r) {
 };
 
 Character.prototype.hitsRight = function (prevX, prevY, nextX, nextY, r) {
+  if (this.isDead) {
+    return false;
+  }
+
   const characterHead = this.cy - this.yHitbox * 0.5;
   const characterRight = this.cx + this.xHitbox;
 
   if (nextY + r >= characterHead) {
-    if ((nextX <= characterRight && nextX > this.cx) || 
-    (characterRight < prevX && characterRight + this.vel > nextX)) {
+    if (
+      (nextX <= characterRight && nextX > this.cx) ||
+      (characterRight < prevX && characterRight + this.vel > nextX)
+    ) {
       this.setAttacking();
       return true;
     }
@@ -70,6 +84,10 @@ Character.prototype.hitsRight = function (prevX, prevY, nextX, nextY, r) {
 };
 
 Character.prototype.hitsUp = function (prevX, prevY, nextX, nextY, r) {
+  if (this.isDead) {
+    return false;
+  }
+
   const characterHead = this.cy - this.yHitbox;
   const characterLeft = this.cx - this.xHitbox;
   const characterRight = this.cx + this.xHitbox;
@@ -84,6 +102,27 @@ Character.prototype.hitsUp = function (prevX, prevY, nextX, nextY, r) {
   }
 
   // It's a miss!
+  return false;
+};
+
+Character.prototype.getsHeart = function (x, y) {
+  if (this.isDead) {
+    return false;
+  }
+
+  const characterHead = this.cy - this.yHitbox;
+  const characterLeft = this.cx - this.xHitbox;
+  const characterRight = this.cx + this.xHitbox;
+
+  if (y > characterHead) {
+    if (x > characterLeft && x < characterRight) {
+      this.health =
+        this.health < this.maxHealth ? this.health + 1 : this.maxHealth;
+
+      return true;
+    }
+  }
+
   return false;
 };
 
@@ -144,11 +183,60 @@ Character.prototype.applyChange = function (change, du) {
 };
 
 Character.prototype.update = function (du) {
+  if (this.health < 1) {
+    this.isDead = true;
+  }
+
+  if (this.isDead) {
+    return;
+  }
+
   const dashChange = this.computeChange();
   this.applyChange(dashChange, du);
 };
 
 Character.prototype.render = function (ctx, renderFrame) {
+  const canvasWidth = g_canvas.clientWidth;
+
+  let flip = true;
+  if (this.direction === 'R') {
+    flip = false;
+  }
+
+  let i;
+
+  if (this.isDead) {
+    if (this.deathFrames < this.sprites.death.length - 1) {
+      for (i = -1; i < 2; i++) {
+        this.sprites.death[this.deathFrames].drawCentredAt(
+          ctx,
+          this.cx + canvasWidth * i,
+          this.cy,
+          3,
+          0,
+          flip
+        );
+      }
+
+      if (renderFrame === 0) {
+        this.deathFrames++;
+      }
+    } else {
+      for (i = -1; i < 2; i++) {
+        this.sprites.death[this.sprites.death.length - 1].drawCentredAt(
+          ctx,
+          this.cx + canvasWidth * i,
+          this.cy,
+          3,
+          0,
+          flip
+        );
+      }
+    }
+
+    return;
+  }
+
   if (renderFrame === 0 && this.attackFrames++ === ATTACK_FRAMES)
     this.attacking = false;
 
@@ -156,24 +244,26 @@ Character.prototype.render = function (ctx, renderFrame) {
     this.keyframe++;
   }
 
-  let flip = true;
-  if (this.direction === 'R') {
-    flip = false;
-  }
-
-  const canvasWidth = g_canvas.clientWidth;
-
-  // The center of the sprite is somewhat unintuitively positioned so we adjust
-  if (this.cx + this.halfWidth * 2 - this.vel < 0) {
+  if (this.cx + this.halfWidth - this.vel < 0) {
     this.cx += canvasWidth;
   } else if (this.cx + this.halfWidth + this.vel > canvasWidth) {
     this.cx -= canvasWidth;
   }
 
+  for (i = 1; i <= this.health; i++) {
+    g_hearts.sprites[0].drawCentredAt(
+      ctx,
+      g_hearts.sprites[0].width * 2.5 * i,
+      g_hearts.sprites[0].height * 2.5,
+      2,
+      0,
+      false
+    );
+  }
+
   // For all states render 3 copies for wrapping purposes (offset by the canvas width)
-  let i = 0;
   if (this.attacking) {
-    for (i = -i; i < 2; i++) {
+    for (i = -1; i < 2; i++) {
       this.sprites.attack[this.attackFrames].drawCentredAt(
         ctx,
         this.cx + canvasWidth * i,
@@ -195,7 +285,7 @@ Character.prototype.render = function (ctx, renderFrame) {
       );
     }
   } else if (this.state === RUNNING) {
-    for (i = -i; i < 2; i++) {
+    for (i = -1; i < 2; i++) {
       this.sprites.run[this.keyframe % this.sprites.run.length].drawCentredAt(
         ctx,
         this.cx + canvasWidth * i,

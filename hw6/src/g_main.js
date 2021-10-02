@@ -102,8 +102,7 @@ g_main._debugRender = function (ctx) {
 g_main.init = function () {
   // Grabbing focus is good, but it sometimes screws up jsfiddle,
   // so it's a risky option during "development"
-  //
-  //window.focus(true);
+  window.focus(true);
 
   this._requestNextIteration();
 };
