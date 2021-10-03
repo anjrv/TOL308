@@ -8,6 +8,8 @@ function Wall(descr) {
   }
 }
 
+garbage = [];
+
 Wall.prototype.initializeTiles = function () {
   let tiles = [];
 
@@ -49,6 +51,7 @@ Wall.prototype.checkHit = function (row, col, prevX, prevY) {
       }
 
       this.tiles[row][col] = 'F';
+      garbage.push({ x: col, y: row });
 
       if (g_sounds) glassSounds[randomIntFromInterval(0, 1)].play();
 
@@ -88,16 +91,9 @@ Wall.prototype.collidesWith = function (prevX, prevY, nextX, nextY, r) {
   }
 };
 
-// Wall doesn't move so updates mostly done through collision
-// Mainly just used to initialize wall after initial load
-Wall.prototype.update = function (du) {
-  if (!this.tiles) {
-    this.initializeTiles();
-  }
-};
+Wall.prototype.populate = function () {
+  const ctx = g_wall_ctx;
 
-Wall.prototype.render = function (ctx, renderFrame) {
-  // Populate the tiles according to their definition
   const regularGradient = ctx.createLinearGradient(
     0,
     0,
@@ -132,5 +128,33 @@ Wall.prototype.render = function (ctx, renderFrame) {
         );
       }
     }
+  }
+};
+
+// Wall doesn't move so updates mostly done through collision
+// Mainly just used to initialize wall after initial load
+Wall.prototype.update = function (du) {
+  if (!this.tiles) {
+    this.initializeTiles();
+    this.populate();
+  }
+};
+
+// Instead of drawing the M*N array every time we don't redraw it at all
+// We just cull out rectangles that have been marked as garbage
+//
+// In general this means the wall "rendering" is now
+// O(1) instead of O(M*N)
+// Based on the size of the garbage, which in most cases should be 1
+Wall.prototype.cull = function (ctx) {
+  if (garbage) {
+    for (let i = 0; i < garbage.length; i++) {
+      // The rectangle stroke actually makes this annoying, try adjust by expanding by a pixel
+      const x = garbage[i].x * this.tileWidth - 0.5;
+      const y = garbage[i].y * this.tileHeight - 0.5;
+      ctx.clearRect(x, y, this.tileWidth + 1, this.tileHeight + 1);
+    }
+
+    garbage = [];
   }
 };

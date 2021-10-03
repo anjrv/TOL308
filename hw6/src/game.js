@@ -18,6 +18,9 @@ The "MAINLOOP" code, inside g_main, is much simplified as a result.
 const g_canvas = document.getElementById('mid');
 const g_ctx = g_canvas.getContext('2d');
 
+const g_wall_canvas = document.getElementById('wall');
+const g_wall_ctx = g_wall_canvas.getContext('2d');
+
 const g_f = document.getElementById('front');
 const g_bg = document.getElementById('back');
 
@@ -119,7 +122,9 @@ function updateSimulation(du) {
 function renderSimulation(ctx) {
   g_hearts.render(ctx, renderFrame);
   g_character.render(ctx, renderFrame);
-  g_wall.render(ctx, renderFrame);
+
+  // This isn't rendered, it's garbage collection
+  g_wall.cull(g_wall_ctx);
 
   for (let i = 0; i < g_balls.length; i++) {
     g_balls[i].render(ctx, renderFrame);

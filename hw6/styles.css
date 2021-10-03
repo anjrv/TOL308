@@ -15,6 +15,7 @@
 
 .front,
 .mid,
+.wall,
 .back {
   position: absolute;
   top: 0px;
@@ -29,10 +30,10 @@
   z-index: 3;
 }
 
-.back1 {
+.wall {
   z-index: 2;
 }
 
-.back2 {
+.back {
   z-index: 1;
 }
