@@ -6,6 +6,13 @@
   background-size: cover;
 }
 
+.loading {
+  font-size: 64px;
+  position: absolute;
+  top: 60%;
+  left: 40%;
+}
+
 .front,
 .mid,
 .back {
