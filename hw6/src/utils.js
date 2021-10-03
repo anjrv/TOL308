@@ -3,7 +3,7 @@
 // =====
 
 function randomIntFromInterval(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min)
+  return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 function clearCanvas(ctx) {
@@ -23,6 +23,7 @@ function fillBox(ctx, x, y, w, h, style) {
   ctx.fillStyle = oldStyle;
 }
 
+// I wanted rounded corner tiles for the wall so now there's this hell function
 function roundedRect(ctx, x, y, w, h, r, style, stroke) {
   if (w < 2 * r) r = w / 2;
   if (h < 2 * r) r = h / 2;

@@ -9,6 +9,9 @@ function Sprite(img) {
   this.width = img.width;
 }
 
+// Degrees ended up not really being used
+// Mostly we just flip the character
+// No reason to remove though
 Sprite.prototype.drawCentredAt = function (
   ctx,
   x,

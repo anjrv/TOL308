@@ -42,10 +42,16 @@ const g_character = new Character({
   cy: g_canvas.height - 88,
 });
 
+
+// Provide some randomization for wall generation
+const scales = [32, 64];
+const blockFreq = randomIntFromInterval(5, 9);
+const blockWidth = randomIntFromInterval(0, 1);
+const blockHeight = randomIntFromInterval(0, 1);
 const g_wall = new Wall({
-  tileWidth: 64,
-  tileHeight: 64,
-  blockFrequency: 0.5,
+  tileWidth: scales[blockWidth],
+  tileHeight: scales[blockHeight],
+  blockFrequency: blockFreq / 10,
 });
 
 const g_balls = [];
