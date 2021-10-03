@@ -150,9 +150,9 @@ Wall.prototype.cull = function (ctx) {
   if (garbage) {
     for (let i = 0; i < garbage.length; i++) {
       // The rectangle stroke actually makes this annoying, try adjust by expanding by a pixel
-      const x = garbage[i].x * this.tileWidth - 0.5;
-      const y = garbage[i].y * this.tileHeight - 0.5;
-      ctx.clearRect(x, y, this.tileWidth + 1, this.tileHeight + 1);
+      const x = garbage[i].x * this.tileWidth - 1;
+      const y = garbage[i].y * this.tileHeight - 1;
+      ctx.clearRect(x, y, this.tileWidth + 2, this.tileHeight + 2);
     }
 
     garbage = [];
