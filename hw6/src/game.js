@@ -245,66 +245,77 @@ function mainInit() {
   g_main.init();
 }
 
+// =============
+// PRELOAD STUFF
+// =============
+
 let oofSound = null;
 let music = null;
 let glassSounds = [];
 let explosionSound = null;
 
-function preloadStuff_thenCall(completionCallback) {
-  const preload = [
-    './assets/character/attack/AttackC01.png',
-    './assets/character/attack/AttackC02.png',
-    './assets/character/attack/AttackC03.png',
-    './assets/character/attack/AttackC04.png',
-    './assets/character/attack/AttackC05.png',
-    './assets/character/attack/AttackC06.png',
-    './assets/character/attack/AttackC07.png',
-    './assets/character/idle/idle01.png',
-    './assets/character/idle/idle02.png',
-    './assets/character/idle/idle03.png',
-    './assets/character/idle/idle04.png',
-    './assets/character/idle/idle05.png',
-    './assets/character/idle/idle06.png',
-    './assets/character/idle/idle07.png',
-    './assets/character/idle/idle08.png',
-    './assets/character/idle/idle09.png',
-    './assets/character/run/run01.png',
-    './assets/character/run/run02.png',
-    './assets/character/run/run03.png',
-    './assets/character/run/run04.png',
-    './assets/character/run/run05.png',
-    './assets/character/run/run06.png',
-    './assets/character/run/run07.png',
-    './assets/character/run/run08.png',
-    './assets/character/death/death01.png',
-    './assets/character/death/death02.png',
-    './assets/character/death/death03.png',
-    './assets/character/death/death04.png',
-    './assets/character/death/death05.png',
-    './assets/ball/hit_effect01.png',
-    './assets/ball/hit_effect02.png',
-    './assets/ball/hit_effect03.png',
-    './assets/ball/hit_effect04.png',
-    './assets/ball/hit_effect05.png',
-    './assets/world/background_obj01.png',
-    './assets/world/background_obj02.png',
-    './assets/world/background_obj03.png',
-    './assets/world/background_obj04.png',
-    './assets/world/background02.png',
-    './assets/world/background03.png',
-    './assets/heart/heart01.png',
-    './assets/heart/heart02.png',
-    './assets/heart/heart03.png',
-    './assets/heart/heart04.png',
-    './assets/heart/heart05.png',
-    './assets/heart/heart06.png',
-    './assets/explosion/destr_effect01.png',
-    './assets/explosion/destr_effect02.png',
-    './assets/explosion/destr_effect03.png',
-    './assets/explosion/destr_effect04.png',
-    './assets/explosion/destr_effect05.png',
-  ];
+const g_images = {};
 
+function requestPreloads() {
+  const preload = {
+    0: './assets/character/attack/AttackC01.png',
+    1: './assets/character/attack/AttackC02.png',
+    2: './assets/character/attack/AttackC03.png',
+    3: './assets/character/attack/AttackC04.png',
+    4: './assets/character/attack/AttackC05.png',
+    5: './assets/character/attack/AttackC06.png',
+    6: './assets/character/attack/AttackC07.png',
+    7: './assets/character/idle/idle01.png',
+    8: './assets/character/idle/idle02.png',
+    9: './assets/character/idle/idle03.png',
+    10: './assets/character/idle/idle04.png',
+    11: './assets/character/idle/idle05.png',
+    12: './assets/character/idle/idle06.png',
+    13: './assets/character/idle/idle07.png',
+    14: './assets/character/idle/idle08.png',
+    15: './assets/character/idle/idle09.png',
+    16: './assets/character/run/run01.png',
+    17: './assets/character/run/run02.png',
+    18: './assets/character/run/run03.png',
+    19: './assets/character/run/run04.png',
+    20: './assets/character/run/run05.png',
+    21: './assets/character/run/run06.png',
+    22: './assets/character/run/run07.png',
+    23: './assets/character/run/run08.png',
+    24: './assets/character/death/death01.png',
+    25: './assets/character/death/death02.png',
+    26: './assets/character/death/death03.png',
+    27: './assets/character/death/death04.png',
+    28: './assets/character/death/death05.png',
+    29: './assets/ball/hit_effect01.png',
+    30: './assets/ball/hit_effect02.png',
+    31: './assets/ball/hit_effect03.png',
+    32: './assets/ball/hit_effect04.png',
+    33: './assets/ball/hit_effect05.png',
+    34: './assets/world/background_obj01.png',
+    35: './assets/world/background_obj02.png',
+    36: './assets/world/background_obj03.png',
+    37: './assets/world/background_obj04.png',
+    38: './assets/world/background02.png',
+    39: './assets/world/background03.png',
+    40: './assets/heart/heart01.png',
+    41: './assets/heart/heart02.png',
+    42: './assets/heart/heart03.png',
+    43: './assets/heart/heart04.png',
+    44: './assets/heart/heart05.png',
+    45: './assets/heart/heart06.png',
+    46: './assets/explosion/destr_effect01.png',
+    47: './assets/explosion/destr_effect02.png',
+    48: './assets/explosion/destr_effect03.png',
+    49: './assets/explosion/destr_effect04.png',
+    50: './assets/explosion/destr_effect05.png',
+  };
+
+  imagesPreload(preload, g_images, preloadDone);
+}
+
+// A function to call when the preloading has completed...
+function preloadDone() {
   const attack = [];
   const idle = [];
   const run = [];
@@ -314,69 +325,37 @@ function preloadStuff_thenCall(completionCallback) {
   const explosions = [];
 
   for (let i = 0; i < 7; i++) {
-    const img = new Image();
-    img.src = preload[i];
-    setTimeout(function () {
-      attack[i] = new Sprite(img);
-    }, 3000);
+    attack[i] = new Sprite(g_images[i]);
   }
 
   for (let i = 0; i < 9; i++) {
-    const img = new Image();
-    img.src = preload[i + 7];
-    setTimeout(function () {
-      idle[i] = new Sprite(img);
-    }, 3000);
+    idle[i] = new Sprite(g_images[i + 7]);
   }
 
   for (let i = 0; i < 8; i++) {
-    const img = new Image();
-    img.src = preload[i + 16];
-    setTimeout(function () {
-      run[i] = new Sprite(img);
-    }, 3000);
+    run[i] = new Sprite(g_images[i + 16]);
   }
 
   for (let i = 0; i < 5; i++) {
-    const img = new Image();
-    img.src = preload[i + 24];
-    setTimeout(function () {
-      death[i] = new Sprite(img);
-    }, 3000);
+    death[i] = new Sprite(g_images[i + 24]);
   }
 
   for (let i = 0; i < 5; i++) {
-    const img = new Image();
-    img.src = preload[i + 29];
-    setTimeout(function () {
-      hit[i] = new Sprite(img);
-    }, 3000);
+    hit[i] = new Sprite(g_images[i + 29]);
+  }
+
+  for (let i = 0; i < 6; i++) {
+    world[i] = new Sprite(g_images[i + 34]);
   }
 
   for (let i = 0; i < 6; i++) {
     const img = new Image();
-    img.src = preload[i + 34];
-    setTimeout(function () {
-      world[i] = new Sprite(img);
-    }, 3000);
-  }
-
-  for (let i = 0; i < 6; i++) {
-    const img = new Image();
-    img.src = preload[i + 40];
-    setTimeout(function () {
-      hearts[i] = new Sprite(img);
-    }, 3000);
+    hearts[i] = new Sprite(g_images[i + 40]);
   }
 
   for (let i = 0; i < 5; i++) {
-    const img = new Image();
-    img.src = preload[i + 46];
-    setTimeout(function () {
-      explosions[i] = new Sprite(img);
-    }, 3000);
+    explosions[i] = new Sprite(g_images[i + 46]);
   }
-
 
   const sprites = {};
   sprites.attack = attack;
@@ -396,9 +375,7 @@ function preloadStuff_thenCall(completionCallback) {
 
   music.loop = true;
 
-  setTimeout(function () {
-    completionCallback();
-  }, 3000);
+  mainInit();
 }
 
-preloadStuff_thenCall(mainInit);
+requestPreloads();
