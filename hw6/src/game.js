@@ -318,7 +318,7 @@ function preloadStuff_thenCall(completionCallback) {
     img.src = preload[i];
     setTimeout(function () {
       attack[i] = new Sprite(img);
-    }, 2000);
+    }, 3000);
   }
 
   for (let i = 0; i < 9; i++) {
@@ -326,7 +326,7 @@ function preloadStuff_thenCall(completionCallback) {
     img.src = preload[i + 7];
     setTimeout(function () {
       idle[i] = new Sprite(img);
-    }, 2000);
+    }, 3000);
   }
 
   for (let i = 0; i < 8; i++) {
@@ -334,7 +334,7 @@ function preloadStuff_thenCall(completionCallback) {
     img.src = preload[i + 16];
     setTimeout(function () {
       run[i] = new Sprite(img);
-    }, 2000);
+    }, 3000);
   }
 
   for (let i = 0; i < 5; i++) {
@@ -342,7 +342,7 @@ function preloadStuff_thenCall(completionCallback) {
     img.src = preload[i + 24];
     setTimeout(function () {
       death[i] = new Sprite(img);
-    }, 2000);
+    }, 3000);
   }
 
   for (let i = 0; i < 5; i++) {
@@ -350,7 +350,7 @@ function preloadStuff_thenCall(completionCallback) {
     img.src = preload[i + 29];
     setTimeout(function () {
       hit[i] = new Sprite(img);
-    }, 2000);
+    }, 3000);
   }
 
   for (let i = 0; i < 6; i++) {
@@ -358,7 +358,7 @@ function preloadStuff_thenCall(completionCallback) {
     img.src = preload[i + 34];
     setTimeout(function () {
       world[i] = new Sprite(img);
-    }, 2000);
+    }, 3000);
   }
 
   for (let i = 0; i < 6; i++) {
@@ -366,7 +366,7 @@ function preloadStuff_thenCall(completionCallback) {
     img.src = preload[i + 40];
     setTimeout(function () {
       hearts[i] = new Sprite(img);
-    }, 2000);
+    }, 3000);
   }
 
   for (let i = 0; i < 5; i++) {
@@ -374,7 +374,7 @@ function preloadStuff_thenCall(completionCallback) {
     img.src = preload[i + 46];
     setTimeout(function () {
       explosions[i] = new Sprite(img);
-    }, 2000);
+    }, 3000);
   }
 
 
@@ -398,7 +398,7 @@ function preloadStuff_thenCall(completionCallback) {
 
   setTimeout(function () {
     completionCallback();
-  }, 2000);
+  }, 3000);
 }
 
 preloadStuff_thenCall(mainInit);

@@ -47,7 +47,7 @@ Wall.prototype.initializeTiles = function () {
   this.tiles = tiles;
 };
 
-resolveTag = function (tag, row, col, prevX, prevY) {
+Wall.prototype.resolveTag = function (tag, row, col, prevX, prevY) {
   if (tag === 'T') return;
 
   if (tag === 'S') {
@@ -68,12 +68,13 @@ resolveTag = function (tag, row, col, prevX, prevY) {
     });
 
     g_balls.push(dupe_ball);
-
-    console.log(g_balls);
   } else if (tag === 'E') {
     for (let i = -1; i <= 2; i++) {
       for (let j = -1; j <= 2; j++) {
-        garbage.push({ x: col - j, y: row - i });
+        if (this.tiles[row - i] && this.tiles[row - i][col - j]) {
+          this.tiles[row - i][col - j] = 'F';
+          garbage.push({ x: col - j, y: row - i });
+        }
       }
     }
 
@@ -89,7 +90,7 @@ Wall.prototype.checkHit = function (row, col, prevX, prevY) {
   if (this.tiles[row] && this.tiles[row][col]) {
     if (this.tiles[row][col] !== 'F') {
       const tag = this.tiles[row][col];
-      resolveTag(tag, row, col, prevX, prevY);
+      this.resolveTag(tag, row, col, prevX, prevY);
 
       this.tiles[row][col] = 'F';
       garbage.push({ x: col, y: row });
