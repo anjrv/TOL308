@@ -248,6 +248,7 @@ function mainInit() {
 let oofSound = null;
 let music = null;
 let glassSounds = [];
+let explosionSound = null;
 
 function preloadStuff_thenCall(completionCallback) {
   const preload = [
@@ -317,7 +318,7 @@ function preloadStuff_thenCall(completionCallback) {
     img.src = preload[i];
     setTimeout(function () {
       attack[i] = new Sprite(img);
-    }, 1000);
+    }, 2000);
   }
 
   for (let i = 0; i < 9; i++) {
@@ -325,7 +326,7 @@ function preloadStuff_thenCall(completionCallback) {
     img.src = preload[i + 7];
     setTimeout(function () {
       idle[i] = new Sprite(img);
-    }, 1000);
+    }, 2000);
   }
 
   for (let i = 0; i < 8; i++) {
@@ -333,7 +334,7 @@ function preloadStuff_thenCall(completionCallback) {
     img.src = preload[i + 16];
     setTimeout(function () {
       run[i] = new Sprite(img);
-    }, 1000);
+    }, 2000);
   }
 
   for (let i = 0; i < 5; i++) {
@@ -341,7 +342,7 @@ function preloadStuff_thenCall(completionCallback) {
     img.src = preload[i + 24];
     setTimeout(function () {
       death[i] = new Sprite(img);
-    }, 1000);
+    }, 2000);
   }
 
   for (let i = 0; i < 5; i++) {
@@ -349,7 +350,7 @@ function preloadStuff_thenCall(completionCallback) {
     img.src = preload[i + 29];
     setTimeout(function () {
       hit[i] = new Sprite(img);
-    }, 1000);
+    }, 2000);
   }
 
   for (let i = 0; i < 6; i++) {
@@ -357,7 +358,7 @@ function preloadStuff_thenCall(completionCallback) {
     img.src = preload[i + 34];
     setTimeout(function () {
       world[i] = new Sprite(img);
-    }, 1000);
+    }, 2000);
   }
 
   for (let i = 0; i < 6; i++) {
@@ -365,7 +366,7 @@ function preloadStuff_thenCall(completionCallback) {
     img.src = preload[i + 40];
     setTimeout(function () {
       hearts[i] = new Sprite(img);
-    }, 1000);
+    }, 2000);
   }
 
   for (let i = 0; i < 5; i++) {
@@ -373,7 +374,7 @@ function preloadStuff_thenCall(completionCallback) {
     img.src = preload[i + 46];
     setTimeout(function () {
       explosions[i] = new Sprite(img);
-    }, 1000);
+    }, 2000);
   }
 
 
@@ -391,12 +392,13 @@ function preloadStuff_thenCall(completionCallback) {
   oofSound = new Audio('./assets/sounds/oof.wav');
   glassSounds.push(new Audio('./assets/sounds/glass1.wav'));
   glassSounds.push(new Audio('./assets/sounds/glass2.wav'));
+  explosionSound = new Audio('./assets/sounds/explosion.wav');
 
   music.loop = true;
 
   setTimeout(function () {
     completionCallback();
-  }, 1000);
+  }, 2000);
 }
 
 preloadStuff_thenCall(mainInit);

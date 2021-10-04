@@ -78,6 +78,7 @@ resolveTag = function (tag, row, col, prevX, prevY) {
     }
 
     g_explosions.explosions.push({ cx: prevX, cy: prevY, frame: 0 });
+    if (g_sounds) explosionSound.play();
   }
 };
 
