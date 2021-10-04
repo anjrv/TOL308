@@ -25,7 +25,10 @@ Wall.prototype.initializeTiles = function () {
     const row = [];
     for (let j = 0; j < xTiles; j++) {
       if (Math.random() < this.blockFrequency) {
-        if (Math.random() < 0.1) {
+        const roll = Math.random();
+        if (roll < 0.05) {
+          row.push('E');
+        } else if (roll < 0.2) {
           row.push('S');
         } else {
           row.push('T');
@@ -37,7 +40,45 @@ Wall.prototype.initializeTiles = function () {
     tiles[i] = row;
   }
 
+  // Populate one random ball duplication tile
+  const dupeY = randomIntFromInterval(this.topEdge, this.bottomEdge);
+  const dupeX = randomIntFromInterval(0, xTiles - 1);
+  tiles[dupeY][dupeX] = 'B';
   this.tiles = tiles;
+};
+
+resolveTag = function (tag, row, col, prevX, prevY) {
+  if (tag === 'T') return;
+
+  if (tag === 'S') {
+    g_hearts.hearts.push({ cx: prevX, cy: prevY });
+  } else if (tag === 'B') {
+    // Wroom
+    g_character.maxVel *= 1.5;
+    g_character.runAccel *= 1.5;
+    g_character.runDecay *= 1.5;
+
+    const dupe_ball = new Ball({
+      cx: prevX,
+      cy: prevY,
+      radius: 8,
+
+      xVel: -g_ball.xVel,
+      yVel: -g_ball.yVel,
+    });
+
+    g_balls.push(dupe_ball);
+
+    console.log(g_balls);
+  } else if (tag === 'E') {
+    for (let i = -1; i <= 2; i++) {
+      for (let j = -1; j <= 2; j++) {
+        garbage.push({ x: col - j, y: row - i });
+      }
+    }
+
+    g_explosions.explosions.push({ cx: prevX, cy: prevY, frame: 0 });
+  }
 };
 
 // Check whether in a populated array index
@@ -45,10 +86,9 @@ Wall.prototype.initializeTiles = function () {
 // This way we don't check every block on every iteration
 Wall.prototype.checkHit = function (row, col, prevX, prevY) {
   if (this.tiles[row] && this.tiles[row][col]) {
-    if (this.tiles[row][col] === 'T' || this.tiles[row][col] === 'S') {
-      if (this.tiles[row][col] === 'S') {
-        g_hearts.hearts.push({ cx: prevX, cy: prevY });
-      }
+    if (this.tiles[row][col] !== 'F') {
+      const tag = this.tiles[row][col];
+      resolveTag(tag, row, col, prevX, prevY);
 
       this.tiles[row][col] = 'F';
       garbage.push({ x: col, y: row });
@@ -70,22 +110,22 @@ Wall.prototype.collidesWith = function (prevX, prevY, nextX, nextY, r) {
     nextY + r < this.bottomEdge * this.tileHeight + this.tileHeight &&
     nextY - r > this.topEdge * this.tileHeight
   ) {
-    let rows = [];
-    let columns = [];
+    let row;
+    let column;
 
     if (nextY < prevY) {
-      rows.push(Math.floor((nextY - r) / this.tileHeight));
+      row = Math.floor((nextY - r) / this.tileHeight);
     } else {
-      rows.push(Math.floor((nextY + r) / this.tileHeight));
+      row = Math.floor((nextY + r) / this.tileHeight);
     }
 
     if (nextX < prevX) {
-      columns.push(Math.floor((nextX - r) / this.tileWidth));
+      column = Math.floor((nextX - r) / this.tileWidth);
     } else {
-      columns.push(Math.floor((nextX + r) / this.tileWidth));
+      column = Math.floor((nextX + r) / this.tileWidth);
     }
 
-    if (this.checkHit(rows[0], columns[0], prevX, prevY)) return true;
+    if (this.checkHit(row, column, prevX, prevY)) return true;
 
     return false;
   }
@@ -103,19 +143,49 @@ Wall.prototype.populate = function () {
   regularGradient.addColorStop(0, '#302b3c');
   regularGradient.addColorStop(1, 'rgba(45, 40, 55, 0.6');
 
-  const specialGradient = ctx.createLinearGradient(
+  const heartGradient = ctx.createLinearGradient(
     0,
     0,
     this.tileWidth,
     this.tileHeight
   );
-  specialGradient.addColorStop(0, '#302b3c');
-  specialGradient.addColorStop(1, 'rgba(216, 59, 46, 0.6');
+  heartGradient.addColorStop(0, '#302b3c');
+  heartGradient.addColorStop(1, 'rgba(216, 59, 46, 0.6');
+
+  const explosionGradient = ctx.createLinearGradient(
+    0,
+    0,
+    this.tileWidth,
+    this.tileHeight
+  );
+  explosionGradient.addColorStop(0, '#302b3c');
+  explosionGradient.addColorStop(1, 'rgba(184, 230, 252, 0.6');
+
+  const ballGradient = ctx.createLinearGradient(
+    0,
+    0,
+    this.tileWidth,
+    this.tileHeight
+  );
+  ballGradient.addColorStop(0, '#302b3c');
+  ballGradient.addColorStop(1, 'rgba(45, 102, 170, 0.6');
 
   for (let i = this.topEdge; i <= this.bottomEdge; i++) {
     for (let j = 0; j < this.tiles[this.topEdge].length; j++) {
       const tile = this.tiles[i][j];
-      if (tile === 'T' || tile === 'S') {
+      if (tile !== 'F') {
+        let gradient;
+
+        if (tile === 'T') {
+          gradient = regularGradient;
+        } else if (tile === 'B') {
+          gradient = ballGradient;
+        } else if (tile === 'E') {
+          gradient = explosionGradient;
+        } else {
+          gradient = heartGradient;
+        }
+
         roundedRect(
           ctx,
           j * this.tileWidth,
@@ -123,7 +193,7 @@ Wall.prototype.populate = function () {
           this.tileWidth,
           this.tileHeight,
           8,
-          (gradient = tile === 'T' ? regularGradient : specialGradient),
+          gradient,
           '#b482ae'
         );
       }
@@ -149,10 +219,12 @@ Wall.prototype.update = function (du) {
 Wall.prototype.cull = function (ctx) {
   if (garbage) {
     for (let i = 0; i < garbage.length; i++) {
-      // The rectangle stroke actually makes this annoying, try adjust by expanding by a pixel
-      const x = garbage[i].x * this.tileWidth - 1;
-      const y = garbage[i].y * this.tileHeight - 1;
-      ctx.clearRect(x, y, this.tileWidth + 2, this.tileHeight + 2);
+      if (garbage[i].y && garbage[i].x) {
+        // The rectangle stroke actually makes this annoying, try adjust by expanding by a pixel
+        const x = garbage[i].x * this.tileWidth - 1;
+        const y = garbage[i].y * this.tileHeight - 1;
+        ctx.clearRect(x, y, this.tileWidth + 2, this.tileHeight + 2);
+      }
     }
 
     garbage = [];

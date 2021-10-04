@@ -40,11 +40,14 @@ const g_hearts = new Hearts({
   hearts: [],
 });
 
+const g_explosions = new Explosions({
+  explosions: [],
+});
+
 const g_character = new Character({
   cx: g_canvas.width / 2,
   cy: g_canvas.height - 88,
 });
-
 
 // Provide some randomization for wall generation
 const scales = [32, 64];
@@ -120,9 +123,9 @@ function updateSimulation(du) {
 // GAME-SPECIFIC RENDERING
 
 function renderSimulation(ctx) {
+  g_explosions.render(ctx, renderFrame);
   g_hearts.render(ctx, renderFrame);
   g_character.render(ctx, renderFrame);
-
   // This isn't rendered, it's garbage collection
   g_wall.cull(g_wall_ctx);
 
@@ -200,17 +203,40 @@ function drawWelcome() {
   g_foreground.textBaseline = 'middle';
 
   // Title
-  g_foreground.fillText('\"Little Red breaks through the glass ceiling\"', g_canvas.width / 2, g_canvas.height / 3);
-  g_foreground.strokeText('Little Red breaks through the glass ceiling', g_canvas.width / 2, g_canvas.height / 3);
-
+  g_foreground.fillText(
+    '"Little Red breaks through the glass ceiling"',
+    g_canvas.width / 2,
+    g_canvas.height / 3
+  );
+  g_foreground.strokeText(
+    'Little Red breaks through the glass ceiling',
+    g_canvas.width / 2,
+    g_canvas.height / 3
+  );
 
   // Sound
-  g_foreground.fillText('\'S\' to make it shut up...', g_canvas.width / 2, g_canvas.height / 2.4);
-  g_foreground.strokeText('\'S\' to make it shut up...', g_canvas.width / 2, g_canvas.height / 2.4);
+  g_foreground.fillText(
+    "'S' to make it shut up...",
+    g_canvas.width / 2,
+    g_canvas.height / 2.4
+  );
+  g_foreground.strokeText(
+    "'S' to make it shut up...",
+    g_canvas.width / 2,
+    g_canvas.height / 2.4
+  );
 
   // Unpause
-  g_foreground.fillText('\'P\' to unpause!', g_canvas.width / 2, g_canvas.height / 2);
-  g_foreground.strokeText('\'P\' to unpause!', g_canvas.width / 2, g_canvas.height / 2);
+  g_foreground.fillText(
+    "'P' to unpause!",
+    g_canvas.width / 2,
+    g_canvas.height / 2
+  );
+  g_foreground.strokeText(
+    "'P' to unpause!",
+    g_canvas.width / 2,
+    g_canvas.height / 2
+  );
 }
 
 function mainInit() {
@@ -271,6 +297,11 @@ function preloadStuff_thenCall(completionCallback) {
     './assets/heart/heart04.png',
     './assets/heart/heart05.png',
     './assets/heart/heart06.png',
+    './assets/explosion/destr_effect01.png',
+    './assets/explosion/destr_effect02.png',
+    './assets/explosion/destr_effect03.png',
+    './assets/explosion/destr_effect04.png',
+    './assets/explosion/destr_effect05.png',
   ];
 
   const attack = [];
@@ -279,6 +310,7 @@ function preloadStuff_thenCall(completionCallback) {
   const hit = [];
   const death = [];
   const hearts = [];
+  const explosions = [];
 
   for (let i = 0; i < 7; i++) {
     const img = new Image();
@@ -336,14 +368,24 @@ function preloadStuff_thenCall(completionCallback) {
     }, 1000);
   }
 
+  for (let i = 0; i < 5; i++) {
+    const img = new Image();
+    img.src = preload[i + 46];
+    setTimeout(function () {
+      explosions[i] = new Sprite(img);
+    }, 1000);
+  }
+
+
   const sprites = {};
   sprites.attack = attack;
   sprites.idle = idle;
   sprites.run = run;
   sprites.death = death;
   g_character.sprites = sprites;
-  g_ball.sprites = hit;
+  g_balls.sprites = hit;
   g_hearts.sprites = hearts;
+  g_explosions.sprites = explosions;
 
   music = new Audio('./assets/sounds/music.mp3');
   oofSound = new Audio('./assets/sounds/oof.wav');

@@ -15,8 +15,6 @@ function Character(descr) {
 const IDLE = 0;
 const RUNNING = 1;
 const ATTACK_FRAMES = 6;
-const RUN_ACCEL = 0.4;
-const RUN_DECAY = 0.25;
 
 // Uhh... Some defined variables...
 Character.prototype.keyframe = 0;
@@ -43,6 +41,8 @@ Character.prototype.yHitbox = 30;
 // Don't care about jumping so we only track X-axis velocity
 Character.prototype.vel = 0;
 Character.prototype.maxVel = 10;
+Character.prototype.runAccel = 0.4,
+Character.prototype.runDecay = 0.25,
 // Buttons
 Character.prototype.GO_LEFT = 'A'.charCodeAt(0);
 Character.prototype.GO_RIGHT = 'D'.charCodeAt(0);
@@ -152,10 +152,10 @@ Character.prototype.computeChange = function () {
       this.direction = 'L';
     }
     if (this.vel > 0) {
-      change -= RUN_ACCEL * 2;
+      change -= this.runAccel * 4;
     } else {
       this.state = 1;
-      change -= RUN_ACCEL;
+      change -= this.runAccel;
     }
   }
 
@@ -165,20 +165,20 @@ Character.prototype.computeChange = function () {
       this.direction = 'R';
     }
     if (this.vel < 0) {
-      change += RUN_ACCEL * 2;
+      change += this.runAccel * 4;
     } else {
-      change += RUN_ACCEL;
+      change += this.runAccel;
     }
   }
 
   // If player is not pushing a direction make character slow down
   if (!g_keys[this.GO_RIGHT] && !g_keys[this.GO_LEFT]) {
     if (this.vel > 0) {
-      change -= RUN_DECAY;
+      change -= this.runDecay;
     }
 
     if (this.vel < 0) {
-      change += RUN_DECAY;
+      change += this.runDecay;
     }
   }
 

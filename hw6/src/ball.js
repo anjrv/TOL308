@@ -132,7 +132,7 @@ Ball.prototype.render = function (ctx, renderFrame) {
     if (frame === HIT_FRAMES - 1) {
       this.hits.splice(i, 1);
     } else {
-      this.sprites[frame].drawCentredAt(ctx, hitx, hity, 1, 0, false);
+      g_balls.sprites[frame].drawCentredAt(ctx, hitx, hity, 1, 0, false);
     }
   }
 };
