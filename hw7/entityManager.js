@@ -54,7 +54,7 @@ const entityManager = {
       let yDiff = Math.abs(posY - this._ships[i].cy);
       yDiff = yDiff > height/2 ? height - yDiff : yDiff;
 
-      const curr = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+      const curr = Math.pow(xDiff, 2) + Math.pow(yDiff, 2);
 
       if (curr < minDist) {
         minDist = curr;
