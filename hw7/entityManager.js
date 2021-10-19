@@ -43,7 +43,7 @@ const entityManager = {
     const width = g_canvas.width;
     const height = g_canvas.height;
 
-    let minDist = g_canvas.width;
+    let minDist = Number.MAX_VALUE;
     let closestIndex = -1;
     let closestShip = null;
 
@@ -55,6 +55,8 @@ const entityManager = {
       yDiff = yDiff > height/2 ? height - yDiff : yDiff;
 
       const curr = Math.pow(xDiff, 2) + Math.pow(yDiff, 2);
+
+      console.log(curr);
 
       if (curr < minDist) {
         minDist = curr;
@@ -120,6 +122,7 @@ const entityManager = {
       return;
 
     const shipInfo = this._findNearestShip(xPos, yPos);
+    console.log(shipInfo);
     shipInfo.theShip.cx = xPos;
     shipInfo.theShip.cy = yPos;
   },
