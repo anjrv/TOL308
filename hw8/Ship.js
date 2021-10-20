@@ -120,6 +120,8 @@ Ship.prototype.update = function (du) {
   }
 
   // TODO: YOUR STUFF HERE! --- Unregister and check for death
+  spatialManager.unregister(this);
+  if (this.isDeadNow) return entityManager.KILL_ME_NOW;
 
   // Perform movement substeps
   var steps = this.numSubSteps;
@@ -131,7 +133,8 @@ Ship.prototype.update = function (du) {
   // Handle firing
   this.maybeFireBullet();
 
-  // TODO: YOUR STUFF HERE! --- Warp if isColliding, otherwise Register
+  // Warp if isColliding, otherwise Register
+  this.isColliding() ? this.warp() : spatialManager.register(this);
 };
 
 Ship.prototype.computeSubStep = function (du) {

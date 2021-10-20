@@ -30,24 +30,37 @@ var spatialManager = {
   // PUBLIC METHODS
 
   getNewSpatialID: function () {
-    // TODO: YOUR STUFF HERE!
+    return this._nextSpatialID++;
   },
 
   register: function (entity) {
-    var pos = entity.getPos();
     var spatialID = entity.getSpatialID();
-
-    // TODO: YOUR STUFF HERE!
+    this._entities[spatialID] = entity;
   },
 
   unregister: function (entity) {
     var spatialID = entity.getSpatialID();
-
-    // TODO: YOUR STUFF HERE!
+    this._entities[spatialID] = null;
   },
 
   findEntityInRange: function (posX, posY, radius) {
-    // TODO: YOUR STUFF HERE!
+    for (var ID in this._entities) {
+      var e = this._entities[ID];
+
+      if (e) {
+        var ePos = e.getPos();
+        var eRad = e.getRadius();
+
+        if (
+          Math.pow(posX - ePos.posX, 2) + Math.pow(posY - ePos.posY, 2) <=
+          Math.pow(radius + eRad, 2)
+        ) {
+          return e;
+        }
+      }
+    }
+
+    return false;
   },
 
   render: function (ctx) {
@@ -56,7 +69,11 @@ var spatialManager = {
 
     for (var ID in this._entities) {
       var e = this._entities[ID];
-      util.strokeCircle(ctx, e.posX, e.posY, e.radius);
+      if (e) {
+        var ePos = e.getPos();
+        var eRad = e.getRadius();
+        util.strokeCircle(ctx, ePos.posX, ePos.posY, eRad);
+      }
     }
     ctx.strokeStyle = oldStyle;
   },

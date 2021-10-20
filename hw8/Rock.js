@@ -58,7 +58,10 @@ Rock.prototype.randomiseVelocity = function () {
 };
 
 Rock.prototype.update = function (du) {
+
   // TODO: YOUR STUFF HERE! --- Unregister and check for death
+  spatialManager.unregister(this);
+  if (this._isDeadNow) return entityManager.KILL_ME_NOW;
 
   this.cx += this.velX * du;
   this.cy += this.velY * du;
@@ -69,6 +72,8 @@ Rock.prototype.update = function (du) {
   this.wrapPosition();
 
   // TODO: YOUR STUFF HERE! --- (Re-)Register
+  spatialManager.register(this);
+
 };
 
 Rock.prototype.getRadius = function () {
