@@ -5,7 +5,7 @@
 
 'use strict';
 
-var util = {
+const util = {
   // RANGES
   // ======
 
@@ -60,7 +60,7 @@ var util = {
   },
 
   wrappedDistSq: function (x1, y1, x2, y2, xWrap, yWrap) {
-    var dx = Math.abs(x2 - x1),
+    let dx = Math.abs(x2 - x1),
       dy = Math.abs(y2 - y1);
     if (dx > xWrap / 2) {
       dx = xWrap - dx;
@@ -75,7 +75,7 @@ var util = {
   // ==========
 
   clearCanvas: function (ctx) {
-    var prevfillStyle = ctx.fillStyle;
+    const prevfillStyle = ctx.fillStyle;
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     ctx.fillStyle = prevfillStyle;
@@ -94,7 +94,7 @@ var util = {
   },
 
   fillBox: function (ctx, x, y, w, h, style) {
-    var oldStyle = ctx.fillStyle;
+    const oldStyle = ctx.fillStyle;
     ctx.fillStyle = style;
     ctx.fillRect(x, y, w, h);
     ctx.fillStyle = oldStyle;

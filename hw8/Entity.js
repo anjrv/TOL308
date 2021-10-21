@@ -31,7 +31,7 @@ function Entity() {
 
 Entity.prototype.setup = function (descr) {
   // Apply all setup properies from the (optional) descriptor
-  for (var property in descr) {
+  for (const property in descr) {
     this[property] = descr[property];
   }
 
@@ -64,7 +64,7 @@ Entity.prototype.kill = function () {
 };
 
 Entity.prototype.findHitEntity = function () {
-  var pos = this.getPos();
+  const pos = this.getPos();
   return spatialManager.findEntityInRange(pos.posX, pos.posY, this.getRadius());
 };
 

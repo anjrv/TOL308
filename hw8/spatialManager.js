@@ -16,7 +16,7 @@ e.g. general collision detection.
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
-var spatialManager = {
+const spatialManager = {
   // "PRIVATE" DATA
 
   _nextSpatialID: 1, // make all valid IDs non-falsey (i.e. don't start at 0)
@@ -34,22 +34,22 @@ var spatialManager = {
   },
 
   register: function (entity) {
-    var spatialID = entity.getSpatialID();
+    const spatialID = entity.getSpatialID();
     this._entities[spatialID] = entity;
   },
 
   unregister: function (entity) {
-    var spatialID = entity.getSpatialID();
+    const spatialID = entity.getSpatialID();
     this._entities[spatialID] = null;
   },
 
   findEntityInRange: function (posX, posY, radius) {
-    for (var ID in this._entities) {
-      var e = this._entities[ID];
+    for (let ID in this._entities) {
+      const e = this._entities[ID];
 
       if (e) {
-        var ePos = e.getPos();
-        var eRad = e.getRadius();
+        const ePos = e.getPos();
+        const eRad = e.getRadius();
 
         if (
           Math.pow(posX - ePos.posX, 2) + Math.pow(posY - ePos.posY, 2) <=
@@ -64,14 +64,14 @@ var spatialManager = {
   },
 
   render: function (ctx) {
-    var oldStyle = ctx.strokeStyle;
+    const oldStyle = ctx.strokeStyle;
     ctx.strokeStyle = 'red';
 
-    for (var ID in this._entities) {
-      var e = this._entities[ID];
+    for (let ID in this._entities) {
+      const e = this._entities[ID];
       if (e) {
-        var ePos = e.getPos();
-        var eRad = e.getRadius();
+        const ePos = e.getPos();
+        const eRad = e.getRadius();
         util.strokeCircle(ctx, ePos.posX, ePos.posY, eRad);
       }
     }

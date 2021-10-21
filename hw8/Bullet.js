@@ -61,9 +61,9 @@ Bullet.prototype.update = function (du) {
   //
   // Handle collisions
   //
-  var hitEntity = this.findHitEntity();
+  const hitEntity = this.findHitEntity();
   if (hitEntity) {
-    var canTakeHit = hitEntity.takeBulletHit;
+    const canTakeHit = hitEntity.takeBulletHit;
     if (canTakeHit) canTakeHit.call(hitEntity);
     return entityManager.KILL_ME_NOW;
   }
@@ -84,7 +84,7 @@ Bullet.prototype.takeBulletHit = function () {
 };
 
 Bullet.prototype.render = function (ctx) {
-  var fadeThresh = Bullet.prototype.lifeSpan / 3;
+  const fadeThresh = Bullet.prototype.lifeSpan / 3;
 
   if (this.lifeSpan < fadeThresh) {
     ctx.globalAlpha = this.lifeSpan / fadeThresh;

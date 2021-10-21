@@ -28,7 +28,7 @@ Sprite.prototype.drawAt = function (ctx, x, y) {
 Sprite.prototype.drawCentredAt = function (ctx, cx, cy, rotation) {
   if (rotation === undefined) rotation = 0;
 
-  var w = this.width,
+  const w = this.width,
     h = this.height;
 
   ctx.save();
@@ -45,7 +45,7 @@ Sprite.prototype.drawCentredAt = function (ctx, cx, cy, rotation) {
 
 Sprite.prototype.drawWrappedCentredAt = function (ctx, cx, cy, rotation) {
   // Get "screen width"
-  var sw = g_canvas.width;
+  const sw = g_canvas.width;
 
   // Draw primary instance
   this.drawWrappedVerticalCentredAt(ctx, cx, cy, rotation);
@@ -62,7 +62,7 @@ Sprite.prototype.drawWrappedVerticalCentredAt = function (
   rotation,
 ) {
   // Get "screen height"
-  var sh = g_canvas.height;
+  const sh = g_canvas.height;
 
   // Draw primary instance
   this.drawCentredAt(ctx, cx, cy, rotation);

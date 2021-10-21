@@ -2,7 +2,7 @@
 // KEYBOARD HANDLING
 // =================
 
-var keys = [];
+const keys = [];
 
 function handleKeydown(evt) {
   keys[evt.keyCode] = true;
@@ -18,7 +18,7 @@ function handleKeyup(evt) {
 // ..until the auto-repeat kicks in, that is.
 //
 function eatKey(keyCode) {
-  var isDown = keys[keyCode];
+  const isDown = keys[keyCode];
   keys[keyCode] = false;
   return isDown;
 }

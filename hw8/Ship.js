@@ -65,7 +65,7 @@ Ship.prototype.warp = function () {
 };
 
 Ship.prototype._updateWarp = function (du) {
-  var SHRINK_RATE = 3 / SECS_TO_NOMINALS;
+  const SHRINK_RATE = 3 / SECS_TO_NOMINALS;
   this._scale += this._scaleDirn * SHRINK_RATE * du;
 
   if (this._scale < 0.2) {
@@ -84,14 +84,14 @@ Ship.prototype._updateWarp = function (du) {
 
 Ship.prototype._moveToASafePlace = function () {
   // Move to a safe place some suitable distance away
-  var origX = this.cx,
+  let origX = this.cx,
     origY = this.cy,
     MARGIN = 40,
     isSafePlace = false;
 
-  for (var attempts = 0; attempts < 100; ++attempts) {
-    var warpDistance = 100 + (Math.random() * g_canvas.width) / 2;
-    var warpDirn = Math.random() * consts.FULL_CIRCLE;
+  for (let attempts = 0; attempts < 100; ++attempts) {
+    const warpDistance = 100 + (Math.random() * g_canvas.width) / 2;
+    const warpDirn = Math.random() * consts.FULL_CIRCLE;
 
     this.cx = origX + warpDistance * Math.sin(warpDirn);
     this.cy = origY - warpDistance * Math.cos(warpDirn);
@@ -124,9 +124,9 @@ Ship.prototype.update = function (du) {
   if (this.isDeadNow) return entityManager.KILL_ME_NOW;
 
   // Perform movement substeps
-  var steps = this.numSubSteps;
-  var dStep = du / steps;
-  for (var i = 0; i < steps; ++i) {
+  const steps = this.numSubSteps;
+  const dStep = du / steps;
+  for (let i = 0; i < steps; ++i) {
     this.computeSubStep(dStep);
   }
 
@@ -138,12 +138,11 @@ Ship.prototype.update = function (du) {
 };
 
 Ship.prototype.computeSubStep = function (du) {
-  var thrust = this.computeThrustMag();
+  const thrust = this.computeThrustMag();
 
   // Apply thrust directionally, based on our rotation
-  var accelX = +Math.sin(this.rotation) * thrust;
-  var accelY = -Math.cos(this.rotation) * thrust;
-
+  const accelX = +Math.sin(this.rotation) * thrust;
+  let accelY = -Math.cos(this.rotation) * thrust;
   accelY += this.computeGravity();
 
   this.applyAccel(accelX, accelY, du);
@@ -155,17 +154,17 @@ Ship.prototype.computeSubStep = function (du) {
   }
 };
 
-var NOMINAL_GRAVITY = 0.12;
+const NOMINAL_GRAVITY = 0.12;
 
 Ship.prototype.computeGravity = function () {
   return g_useGravity ? NOMINAL_GRAVITY : 0;
 };
 
-var NOMINAL_THRUST = +0.2;
-var NOMINAL_RETRO = -0.1;
+const NOMINAL_THRUST = +0.2;
+const NOMINAL_RETRO = -0.1;
 
 Ship.prototype.computeThrustMag = function () {
-  var thrust = 0;
+  let thrust = 0;
 
   if (keys[this.KEY_THRUST]) {
     thrust += NOMINAL_THRUST;
@@ -179,29 +178,29 @@ Ship.prototype.computeThrustMag = function () {
 
 Ship.prototype.applyAccel = function (accelX, accelY, du) {
   // u = original velocity
-  var oldVelX = this.velX;
-  var oldVelY = this.velY;
+  const oldVelX = this.velX;
+  const oldVelY = this.velY;
 
   // v = u + at
   this.velX += accelX * du;
   this.velY += accelY * du;
 
   // v_ave = (u + v) / 2
-  var aveVelX = (oldVelX + this.velX) / 2;
-  var aveVelY = (oldVelY + this.velY) / 2;
+  const aveVelX = (oldVelX + this.velX) / 2;
+  const aveVelY = (oldVelY + this.velY) / 2;
 
   // Decide whether to use the average or not (average is best!)
-  var intervalVelX = g_useAveVel ? aveVelX : this.velX;
-  var intervalVelY = g_useAveVel ? aveVelY : this.velY;
+  const intervalVelX = g_useAveVel ? aveVelX : this.velX;
+  let intervalVelY = g_useAveVel ? aveVelY : this.velY;
 
   // s = s + v_ave * t
-  var nextX = this.cx + intervalVelX * du;
-  var nextY = this.cy + intervalVelY * du;
+  const nextX = this.cx + intervalVelX * du;
+  const nextY = this.cy + intervalVelY * du;
 
   // bounce
   if (g_useGravity) {
-    var minY = g_sprites.ship.height / 2;
-    var maxY = g_canvas.height - minY;
+    const minY = g_sprites.ship.height / 2;
+    const maxY = g_canvas.height - minY;
 
     // Ignore the bounce if the ship is already in
     // the "border zone" (to avoid trapping them there)
@@ -220,13 +219,13 @@ Ship.prototype.applyAccel = function (accelX, accelY, du) {
 
 Ship.prototype.maybeFireBullet = function () {
   if (keys[this.KEY_FIRE]) {
-    var dX = +Math.sin(this.rotation);
-    var dY = -Math.cos(this.rotation);
-    var launchDist = this.getRadius() * 1.2;
+    const dX = +Math.sin(this.rotation);
+    const dY = -Math.cos(this.rotation);
+    const launchDist = this.getRadius() * 1.2;
 
-    var relVel = this.launchVel;
-    var relVelX = dX * relVel;
-    var relVelY = dY * relVel;
+    const relVel = this.launchVel;
+    const relVelX = dX * relVel;
+    const relVelY = dY * relVel;
 
     entityManager.fireBullet(
       this.cx + dX * launchDist,
@@ -258,7 +257,7 @@ Ship.prototype.halt = function () {
   this.velY = 0;
 };
 
-var NOMINAL_ROTATE_RATE = 0.1;
+const NOMINAL_ROTATE_RATE = 0.1;
 
 Ship.prototype.updateRotation = function (du) {
   if (keys[this.KEY_LEFT]) {
@@ -270,7 +269,7 @@ Ship.prototype.updateRotation = function (du) {
 };
 
 Ship.prototype.render = function (ctx) {
-  var origScale = this.sprite.scale;
+  const origScale = this.sprite.scale;
   // pass my scale into the sprite, for drawing
   this.sprite.scale = this._scale;
   this.sprite.drawWrappedCentredAt(ctx, this.cx, this.cy, this.rotation);

@@ -40,16 +40,16 @@ Rock.prototype.randomisePosition = function () {
 };
 
 Rock.prototype.randomiseVelocity = function () {
-  var MIN_SPEED = 20,
+  const MIN_SPEED = 20,
     MAX_SPEED = 70;
 
-  var speed = util.randRange(MIN_SPEED, MAX_SPEED) / SECS_TO_NOMINALS;
-  var dirn = Math.random() * consts.FULL_CIRCLE;
+  const speed = util.randRange(MIN_SPEED, MAX_SPEED) / SECS_TO_NOMINALS;
+  const dirn = Math.random() * consts.FULL_CIRCLE;
 
   this.velX = this.velX || speed * Math.cos(dirn);
   this.velY = this.velY || speed * Math.sin(dirn);
 
-  var MIN_ROT_SPEED = 0.5,
+  const MIN_ROT_SPEED = 0.5,
     MAX_ROT_SPEED = 2.5;
 
   this.velRot =
@@ -106,7 +106,7 @@ Rock.prototype._spawnFragment = function () {
 };
 
 Rock.prototype.render = function (ctx) {
-  var origScale = this.sprite.scale;
+  const origScale = this.sprite.scale;
   // pass my scale into the sprite, for drawing
   this.sprite.scale = this.scale;
   this.sprite.drawWrappedCentredAt(ctx, this.cx, this.cy, this.rotation);

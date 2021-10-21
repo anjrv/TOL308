@@ -20,7 +20,7 @@ with suitable 'data' and 'methods'.
 //
 /*jslint nomen: true, white: true, plusplus: true*/
 
-var entityManager = {
+const entityManager = {
   // "PRIVATE" DATA
 
   _rocks: [],
@@ -32,7 +32,7 @@ var entityManager = {
   // "PRIVATE" METHODS
 
   _generateRocks: function () {
-    var i,
+    let i,
       NUM_ROCKS = 4;
 
     for (i = 0; i < NUM_ROCKS; ++i) {
@@ -41,14 +41,14 @@ var entityManager = {
   },
 
   _findNearestShip: function (posX, posY) {
-    var closestShip = null,
+    let closestShip = null,
       closestIndex = -1,
       closestSq = 1000 * 1000;
 
-    for (var i = 0; i < this._ships.length; ++i) {
-      var thisShip = this._ships[i];
-      var shipPos = thisShip.getPos();
-      var distSq = util.wrappedDistSq(
+    for (let i = 0; i < this._ships.length; ++i) {
+      const thisShip = this._ships[i];
+      const shipPos = thisShip.getPos();
+      const distSq = util.wrappedDistSq(
         shipPos.posX,
         shipPos.posY,
         posX,
@@ -70,7 +70,7 @@ var entityManager = {
   },
 
   _forEachOf: function (aCategory, fn) {
-    for (var i = 0; i < aCategory.length; ++i) {
+    for (let i = 0; i < aCategory.length; ++i) {
       fn.call(aCategory[i]);
     }
   },
@@ -116,14 +116,14 @@ var entityManager = {
   },
 
   killNearestShip: function (xPos, yPos) {
-    var theShip = this._findNearestShip(xPos, yPos).theShip;
+    const theShip = this._findNearestShip(xPos, yPos).theShip;
     if (theShip) {
       theShip.kill();
     }
   },
 
   yoinkNearestShip: function (xPos, yPos) {
-    var theShip = this._findNearestShip(xPos, yPos).theShip;
+    const theShip = this._findNearestShip(xPos, yPos).theShip;
     if (theShip) {
       theShip.setPos(xPos, yPos);
     }
@@ -142,12 +142,12 @@ var entityManager = {
   },
 
   update: function (du) {
-    for (var c = 0; c < this._categories.length; ++c) {
-      var aCategory = this._categories[c];
-      var i = 0;
+    for (let c = 0; c < this._categories.length; ++c) {
+      const aCategory = this._categories[c];
+      let i = 0;
 
       while (i < aCategory.length) {
-        var status = aCategory[i].update(du);
+        const status = aCategory[i].update(du);
 
         if (status === this.KILL_ME_NOW) {
           // remove the dead guy, and shuffle the others down to
@@ -163,15 +163,15 @@ var entityManager = {
   },
 
   render: function (ctx) {
-    var debugX = 10,
+    let debugX = 10,
       debugY = 100;
 
-    for (var c = 0; c < this._categories.length; ++c) {
-      var aCategory = this._categories[c];
+    for (let c = 0; c < this._categories.length; ++c) {
+      const aCategory = this._categories[c];
 
       if (!this._bShowRocks && aCategory == this._rocks) continue;
 
-      for (var i = 0; i < aCategory.length; ++i) {
+      for (let i = 0; i < aCategory.length; ++i) {
         aCategory[i].render(ctx);
         //debug.text(".", debugX + i * 10, debugY);
       }
